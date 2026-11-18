@@ -349,7 +349,7 @@
       renderAll();
     }
 
-    // المعلم الذكي (الاتصال الفعلي مع Groq API)
+    // المعلم الذكي (الاتصال الفعلي مع Groq API باستخدام النموذج الصحيح)
     function updateAiSubject() {
       appData.aiSubject = document.getElementById('aiSubjectSelect').value;
       document.getElementById('aiCurrentSpecText').textContent = "جاهز للإجابة • تخصص: " + appData.aiSubject;
@@ -414,7 +414,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: 'llama-3.1-70b-versatile',
             messages: [
               { role: 'system', content: `${appData.aiPrompt} تخصصك الحالي هو: ${appData.aiSubject}. أجب باللغة العربية دائماً.` },
               { role: 'user', content: userText }
@@ -851,5 +851,3 @@
   </script>
 </body>
 </html>
-</model>
-  
