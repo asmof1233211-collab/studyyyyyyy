@@ -7,126 +7,137 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; }
-    .tab-active { background-color: #4f46e5; color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
-    .card { background: white; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; transition: background 0.5s ease; }
+    .tab-active { background-color: #0d9488; color: white; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25); }
+    .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body id="pageBody" class="min-h-screen flex flex-col bg-slate-50 bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');">
 
   <!-- الشريط العلوي -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-xl">د</div>
+        <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-extrabold text-xl shadow-md">د</div>
         <div>
           <h1 id="siteTitle" class="font-extrabold text-lg text-slate-900 leading-tight">منصة الدراسة الذكية</h1>
-          <p class="text-xs text-slate-500">مساعدك الدراسي الشامل</p>
+          <p class="text-xs text-slate-500">مساعدك الدراسي للاسترخاء والإنتاجية</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="toggleEditMode()" id="editModeBtn" class="px-3.5 py-2 rounded-xl text-sm font-bold border border-slate-300 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5">
+        <button onclick="toggleEditMode()" id="editModeBtn" class="px-3.5 py-2 rounded-xl text-sm font-bold border border-slate-300 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5 bg-white">
           <span>⚙️</span>
           <span id="editModeText">وضع التعديل: مغلق</span>
         </button>
       </div>
     </div>
 
-    <!-- شريط التنقل -->
+    <!-- شريط التنقل (بدون المعلم الذكي) -->
     <nav class="max-w-6xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto">
-      <button onclick="switchTab('ai')" id="tab-ai" class="tab-btn tab-active px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition">🤖 المعلم الذكي</button>
-      <button onclick="switchTab('ministerial')" id="tab-ministerial" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">📚 الأسئلة الوزارية</button>
-      <button onclick="switchTab('exams')" id="tab-exams" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">📝 الامتحانات</button>
-      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">📅 الجدول الدراسي</button>
-      <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">⏱️ المؤقت والمهام</button>
-      <button onclick="switchTab('pdfs')" id="tab-pdfs" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">📂 الملخصات و PDF</button>
-      <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🛠️ الإدارة والنسخ</button>
+      <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn tab-active px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition shadow-sm">⏱️ المؤقت والأصوات</button>
+      <button onclick="switchTab('ministerial')" id="tab-ministerial" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📚 الأسئلة الوزارية</button>
+      <button onclick="switchTab('exams')" id="tab-exams" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📝 الامتحانات</button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📅 الجدول الدراسي</button>
+      <button onclick="switchTab('pdfs')" id="tab-pdfs" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📂 الملخصات و PDF</button>
+      <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">🛠️ الإدارة والنسخ</button>
     </nav>
   </header>
 
   <!-- المحتوى الرئيسي -->
-  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 space-y-6">
 
-    <!-- 1. قسم المعلم الذكي -->
-    <section id="sec-ai" class="section-panel space-y-4">
+    <!-- 1. قسم المؤقت والمهام وأصوات الاسترخاء والقرآن -->
+    <section id="sec-timer" class="section-panel grid md:grid-cols-2 gap-6">
       
-      <!-- صندوق إعداد مفتاح Groq API -->
-      <div class="card p-4 bg-indigo-50/70 border-indigo-200">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="flex-1 min-w-[240px]">
-            <label class="block text-xs font-extrabold text-indigo-900 mb-1">🔑 مفتاح الذكاء الاصطناعي (Groq API Key):</label>
-            <div class="flex gap-2">
-              <input type="password" id="groqApiKeyInput" placeholder="ألصق مفتاحك الذي يبدأ بـ gsk_ هنا..." class="flex-1 px-3 py-2 rounded-xl border border-indigo-200 bg-white text-sm focus:outline-none focus:border-indigo-500" dir="ltr">
-              <button onclick="saveApiKey()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition">حفظ المفتاح</button>
-            </div>
-            <p id="apiKeyStatus" class="text-xs mt-1 text-slate-600">الحالة: بانتظار إدخال المفتاح</p>
-          </div>
-
-          <div class="min-w-[180px]">
-            <label class="block text-xs font-extrabold text-slate-700 mb-1">تخصص المعلم:</label>
-            <select id="aiSubjectSelect" onchange="updateAiSubject()" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm font-bold">
-              <option value="عام لجميع المواد الدراسية">عام (كل المواد)</option>
-              <option value="الفيزياء">الفيزياء</option>
-              <option value="الرياضيات">الرياضيات</option>
-              <option value="الكيمياء">الكيمياء</option>
-              <option value="الأحياء">الأحياء</option>
-              <option value="اللغة العربية وقواعدها">اللغة العربية</option>
-              <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+      <!-- المؤقت وخلفيات الطبيعة والأصوات -->
+      <div class="card p-6 text-center space-y-5 shadow-xl border-teal-100">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-base text-slate-800">⏱️ مؤقت التركيز والاسترخاء</h2>
+          <!-- خيار تغيير الخلفية الطبيعية -->
+          <div class="text-right">
+            <label class="text-xs font-bold text-slate-600 block mb-1">اختر الخلفية الطبيعية:</label>
+            <select id="bgSelector" onchange="changeBackground(this.value)" class="px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold bg-white shadow-sm">
+              <option value="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80">🌊 شاطئ البحر الهادئ</option>
+              <option value="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80">🌲 غابة خضراء مريحة</option>
+              <option value="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80">🏔️ جبال ونجوم هادئة</option>
+              <option value="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80">🌧️ جو ممطر منعش</option>
             </select>
           </div>
         </div>
 
-        <!-- تعديل تعليمات الذكاء الاصطناعي -->
-        <div class="mt-3 pt-3 border-t border-indigo-100">
-          <details>
-            <summary class="text-xs font-bold text-indigo-700 cursor-pointer">تخصيص أسلوب وتعليمات المعلم الذكي (اختياري)</summary>
-            <textarea id="aiSystemPrompt" rows="2" onchange="saveAiPrompt()" class="mt-2 w-full p-2.5 text-xs rounded-xl border border-indigo-200 bg-white">أنت معلم خصوصي ذكي ومختص. اشرح بأسلوب مبسط، واضح، ومنظم على شكل نقاط، واعطِ أمثلة محلولة وركز على النقاط الوزارية المهمة.</textarea>
-          </details>
+        <div class="flex justify-center gap-2">
+          <button onclick="setTimerMinutes(25)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition">25 د دراسة</button>
+          <button onclick="setTimerMinutes(50)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition">50 د دراسة</button>
+          <button onclick="setTimerMinutes(5)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition">5 د استراحة</button>
         </div>
-      </div>
 
-      <!-- أزرار الأوامر السريعة -->
-      <div class="card p-4">
-        <p class="text-xs font-bold text-slate-500 mb-2">أوامر سريعة جاهزة:</p>
-        <div id="quickPromptsContainer" class="flex flex-wrap gap-2"></div>
-      </div>
+        <div id="timerDisplay" class="text-6xl font-extrabold text-slate-900 tracking-wider py-4 drop-shadow-sm" dir="ltr">25:00</div>
+        
+        <div class="flex justify-center gap-3">
+          <button onclick="startTimer()" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl shadow-md transition">ابدأ التركيز</button>
+          <button onclick="pauseTimer()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md transition">إيقاف مؤقت</button>
+          <button onclick="resetTimer()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm rounded-xl transition">إعادة ضبط</button>
+        </div>
 
-      <!-- نافذة المحادثة -->
-      <div class="card overflow-hidden flex flex-col h-[500px]">
-        <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center text-lg">🤖</div>
-            <div>
-              <h2 class="font-bold text-sm">المعلم الذكي المختص</h2>
-              <p id="aiCurrentSpecText" class="text-xs text-emerald-400">جاهز للإجابة • تخصص: عام</p>
+        <!-- حزمة الأصوات (قرآن ومطر) -->
+        <div class="pt-4 border-t border-slate-100 space-y-3 text-right">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-extrabold text-teal-900 flex items-center gap-1.5">
+              <span>🎧</span> أصوات خلفية هادئة وقرآن كريم:
+            </label>
+            <span id="audioStatus" class="text-xs text-slate-500 font-semibold">متوقف</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <select id="soundType" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white shadow-sm" onchange="changeAmbientSound(this.value)">
+              <option value="none">-- بدون صوت خلفي --</option>
+              <optgroup label="📖 تلاوات القرآن الكريم">
+                <option value="quran_mishary">سورة البقرة - الشيخ مشاري العفاسي</option>
+                <option value="quran_sudais">تلاوة خاشعة - الشيخ عبد الرحمن السديس</option>
+                <option value="quran_basit">ترتيل هادئ - الشيخ عبد الباسط عبد الصمد</option>
+                <option value="quran_ghamdi">آيات السكينة واليقين - سعد الغامدي</option>
+              </optgroup>
+              <optgroup label="🌿 أصوات الطبيعة والاسترخاء">
+                <option value="rain">أصوات المطر الهادئ</option>
+                <option value="waves">أمواج البحر الناعمة</option>
+                <option value="forest">نسيم الغابة والطيور</option>
+              </optgroup>
+            </select>
+
+            <div class="flex gap-2">
+              <button onclick="toggleAmbientAudio()" id="audioToggleBtn" class="flex-1 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-sm">تشغيل الصوت 🔊</button>
             </div>
           </div>
-          <button onclick="clearChat()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300">مسح المحادثة</button>
+          <p class="text-[11px] text-slate-500 leading-relaxed">* ملاحظة: تلاوات القرآن الكريم تعمل بروابط بث مباشرة ونقية لتساعدك على الحفظ والتركيز بصفاء ذهن.</p>
         </div>
+      </div>
 
-        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50">
-          <div class="bg-white border border-slate-200 rounded-2xl rounded-tr-none p-3.5 max-w-[85%] shadow-sm">
-            <p class="text-xs font-bold text-indigo-600 mb-1">✨ المعلم الذكي</p>
-            <p class="text-sm leading-relaxed">أهلاً بك يا بطل! ضع مفتاح Groq الخاص بك في الخانة أعلاه واضغط حفظ، ثم اسألني عن أي قانون في الفيزياء، مسألة في الرياضيات، قاعدة عربية، أو اطلب تلخيص أي موضوع دراسي!</p>
-          </div>
+      <!-- المهام اليومية -->
+      <div class="card p-6 space-y-4 shadow-xl border-teal-100">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-base text-slate-800">✅ مهامي الدراسية اليوم</h2>
+          <span id="taskProgressText" class="text-xs font-extrabold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg">0%</span>
         </div>
-
-        <form onsubmit="sendAiMessage(event)" class="p-3 bg-white border-t border-slate-200 flex gap-2">
-          <input type="text" id="chatInput" placeholder="اكتب سؤالك الدراسي هنا..." class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-indigo-500" required />
-          <button type="submit" id="sendBtn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition">إرسال</button>
+        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner">
+          <div id="taskProgressBar" class="bg-teal-600 h-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <form onsubmit="addTask(event)" class="flex gap-2">
+          <input type="text" id="newTaskInput" placeholder="أضف مهمة جديدة (مثال: حفظ آيات أو مراجعة فصل)..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white/80 focus:outline-none focus:border-teal-500 shadow-sm" required>
+          <button type="submit" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl shadow-md transition">إضافة</button>
         </form>
+        <ul id="tasksList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></ul>
       </div>
     </section>
 
     <!-- 2. قسم الأسئلة الوزارية -->
     <section id="sec-ministerial" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="card p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
         <div class="flex flex-wrap gap-2 flex-1">
-          <input type="text" id="minSearch" oninput="renderMinisterial()" placeholder="ابحث في الأسئلة الوزارية..." class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm flex-1 min-w-[200px]">
-          <select id="minFilterSubject" onchange="renderMinisterial()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+          <input type="text" id="minSearch" oninput="renderMinisterial()" placeholder="ابحث في الأسئلة الوزارية..." class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm flex-1 min-w-[200px] bg-white">
+          <select id="minFilterSubject" onchange="renderMinisterial()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold bg-white">
             <option value="all">كل المواد</option>
             <option value="الفيزياء">الفيزياء</option>
             <option value="الرياضيات">الرياضيات</option>
@@ -135,113 +146,68 @@
             <option value="اللغة العربية">اللغة العربية</option>
           </select>
         </div>
-        <button onclick="openAddQuestionModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl">+ إضافة سؤال وزاري</button>
+        <button onclick="openAddQuestionModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة سؤال وزاري</button>
       </div>
-
       <div id="ministerialList" class="grid md:grid-cols-2 gap-4"></div>
     </section>
 
     <!-- 3. قسم الامتحانات -->
     <section id="sec-exams" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex items-center justify-between">
+      <div class="card p-4 flex items-center justify-between shadow-md">
         <div>
-          <h2 class="font-extrabold text-base">الاختبارات التفاعلية</h2>
+          <h2 class="font-extrabold text-base text-slate-800">الاختبارات التفاعلية</h2>
           <p class="text-xs text-slate-500">اختبر نفسك مع تصحيح فوري ونتيجة دقيقة</p>
         </div>
-        <button onclick="openAddExamModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl">+ إضافة سؤال امتحان</button>
+        <button onclick="openAddExamModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة سؤال امتحان</button>
       </div>
-      <div id="examContainer" class="card p-5 space-y-5"></div>
+      <div id="examContainer" class="card p-6 space-y-5 shadow-md"></div>
     </section>
 
     <!-- 4. قسم الجدول الدراسي -->
     <section id="sec-schedule" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex items-center justify-between">
-        <h2 class="font-extrabold text-base">الجدول الدراسي الأسبوعي</h2>
-        <button onclick="openAddScheduleModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl">+ إضافة حصة للجدول</button>
+      <div class="card p-4 flex items-center justify-between shadow-md">
+        <h2 class="font-extrabold text-base text-slate-800">الجدول الدراسي الأسبوعي</h2>
+        <button onclick="openAddScheduleModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة حصة للجدول</button>
       </div>
       <div id="scheduleGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
     </section>
 
-    <!-- 5. قسم المؤقت والمهام -->
-    <section id="sec-timer" class="section-panel hidden grid md:grid-cols-2 gap-4">
-      <!-- المؤقت -->
-      <div class="card p-5 text-center space-y-4">
-        <h2 class="font-extrabold text-base">⏱️ مؤقت الدراسة (بومودورو)</h2>
-        <div class="flex justify-center gap-2">
-          <button onclick="setTimerMinutes(25)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700">25 د دراسة</button>
-          <button onclick="setTimerMinutes(50)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700">50 د دراسة</button>
-          <button onclick="setTimerMinutes(5)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700">5 د استراحة</button>
-        </div>
-        <div id="timerDisplay" class="text-6xl font-extrabold text-slate-900 tracking-wider py-4" dir="ltr">25:00</div>
-        <div class="flex justify-center gap-2">
-          <button onclick="startTimer()" class="px-5 py-2.5 bg-indigo-600 text-white font-bold text-sm rounded-xl">ابدأ</button>
-          <button onclick="pauseTimer()" class="px-5 py-2.5 bg-amber-500 text-white font-bold text-sm rounded-xl">إيقاف مؤقت</button>
-          <button onclick="resetTimer()" class="px-5 py-2.5 bg-slate-200 text-slate-700 font-bold text-sm rounded-xl">إعادة</button>
-        </div>
-        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-center gap-3 text-xs">
-          <label class="font-bold">نغمة التنبيه:</label>
-          <select id="soundType" class="px-2.5 py-1.5 rounded-lg border border-slate-200">
-            <option value="bell">جرس هادئ</option>
-            <option value="digital">تنبيه رقمي</option>
-            <option value="chime">رنين موسيقي</option>
-          </select>
-          <button onclick="playAlarmSound()" class="px-3 py-1.5 bg-slate-800 text-white rounded-lg font-bold">🔊 تجربة الصوت</button>
-        </div>
-      </div>
-
-      <!-- المهام اليومية -->
-      <div class="card p-5 space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="font-extrabold text-base">✅ مهامي الدراسية اليوم</h2>
-          <span id="taskProgressText" class="text-xs font-bold text-indigo-600">0%</span>
-        </div>
-        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-          <div id="taskProgressBar" class="bg-indigo-600 h-full transition-all" style="width: 0%"></div>
-        </div>
-        <form onsubmit="addTask(event)" class="flex gap-2">
-          <input type="text" id="newTaskInput" placeholder="أضف مهمة جديدة (مثال: حل وزاريات الفصل الأول)..." class="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-sm" required>
-          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white font-bold text-sm rounded-xl">إضافة</button>
-        </form>
-        <ul id="tasksList" class="space-y-2 max-h-64 overflow-y-auto"></ul>
-      </div>
-    </section>
-
-    <!-- 6. قسم الملخصات و PDF -->
+    <!-- 5. قسم الملخصات و PDF -->
     <section id="sec-pdfs" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="card p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
         <div>
-          <h2 class="font-extrabold text-base">📂 مكتبة الملازم والملفات (PDF)</h2>
+          <h2 class="font-extrabold text-base text-slate-800">📂 مكتبة الملازم والملفات (PDF)</h2>
           <p class="text-xs text-slate-500">ارفع ملفات PDF من جهازك أو أضف روابط ملازمك الدراسية</p>
         </div>
         <div class="flex gap-2">
-          <label class="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-xl cursor-pointer">
+          <label class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl cursor-pointer shadow-sm transition">
             + رفع ملف PDF من الجهاز
             <input type="file" accept="application/pdf" onchange="handlePdfUpload(event)" class="hidden">
           </label>
-          <button onclick="openAddLinkModal()" class="px-4 py-2 bg-slate-800 text-white text-sm font-bold rounded-xl">+ إضافة رابط ملزمة</button>
+          <button onclick="openAddLinkModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-xl shadow-sm transition">+ إضافة رابط ملزمة</button>
         </div>
       </div>
       <div id="pdfGrid" class="grid md:grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- 7. قسم الإدارة والنسخ الاحتياطي -->
+    <!-- 6. قسم الإدارة والنسخ الاحتياطي -->
     <section id="sec-admin" class="section-panel hidden space-y-4">
-      <div class="card p-5 space-y-4">
-        <h2 class="font-extrabold text-base">🛠️ إعدادات المنصة والنسخ الاحتياطي</h2>
+      <div class="card p-6 space-y-4 shadow-md">
+        <h2 class="font-extrabold text-base text-slate-800">🛠️ إعدادات المنصة والنسخ الاحتياطي</h2>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم المنصة:</label>
           <div class="flex gap-2 max-w-md">
-            <input type="text" id="customSiteTitleInput" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm">
-            <button onclick="updateSiteTitle()" class="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-xl">تحديث الاسم</button>
+            <input type="text" id="customSiteTitleInput" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm bg-white">
+            <button onclick="updateSiteTitle()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl shadow-sm">تحديث الاسم</button>
           </div>
         </div>
         <div class="pt-4 border-t border-slate-100 flex flex-wrap gap-3">
-          <button onclick="exportData()" class="px-4 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl">⬇️ تصدير نسخة احتياطية (JSON)</button>
-          <label class="px-4 py-2.5 bg-amber-600 text-white text-sm font-bold rounded-xl cursor-pointer">
+          <button onclick="exportData()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">⬇️ تصدير نسخة احتياطية (JSON)</button>
+          <label class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold rounded-xl cursor-pointer shadow-sm">
             ⬆️ استيراد نسخة احتياطية
             <input type="file" accept=".json" onchange="importData(event)" class="hidden">
           </label>
-          <button onclick="resetAllData()" class="px-4 py-2.5 bg-rose-600 text-white text-sm font-bold rounded-xl">🗑️ استعادة الضبط الافتراضي</button>
+          <button onclick="resetAllData()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl shadow-sm">🗑️ استعادة الضبط الافتراضي</button>
         </div>
       </div>
     </section>
@@ -249,27 +215,24 @@
   </main>
 
   <!-- نافذة منبثقة عامة للإضافة -->
-  <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 id="modalTitle" class="font-extrabold text-base">إضافة عنصر</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
+  <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 id="modalTitle" class="font-extrabold text-base text-slate-900">إضافة عنصر</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
       </div>
       <div id="modalBody" class="space-y-3"></div>
     </div>
   </div>
 
+  <!-- عنصر مشغل الصوت الخلفي الخفي -->
+  <audio id="ambientAudioElement" loop class="hidden"></audio>
+
   <script>
-    // البيانات الافتراضية
+    // البيانات الافتراضية للمنصة (بدون ذكاء اصطناعي)
     const defaultData = {
       siteTitle: "منصة الدراسة الذكية",
-      aiSubject: "عام لجميع المواد الدراسية",
-      aiPrompt: "أنت معلم خصوصي ذكي ومختص. اشرح بأسلوب مبسط، واضح، ومنظم على شكل نقاط، واعطِ أمثلة محلولة وركز على النقاط الوزارية المهمة.",
-      quickPrompts: [
-        "💡 اشرح لي ببساطة",
-        "📝 لخص أهم النقاط والقوانين الوزارية",
-        "🎯 اختبرني بـ 3 أسئلة وزارية مع الحل"
-      ],
+      currentBg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80",
       ministerial: [
         { id: 1, subject: "الفيزياء", year: "2023 دور أول", q: "ما الفائدة العملية من وجود المادة العازلة بين صفيحتي المتسعة؟", a: "1. زيادة سعة المتسعة حسب العلاقة Ck = k.C\n2. منع الانهيار الكهربائي المبكر للعازل بين الصفيحتين عند تسليط فرق جهد كبير." },
         { id: 2, subject: "الكيمياء", year: "2022 تمهيدي", q: "علل: ترتفع درجة حرارة التفاعل الباعث للحرارة عند إجرائه في إناء معزول؟", a: "لأن التفاعل يحرر طاقة حرارية إلى المحيط، وبما أن الإناء معزول فلا تتسرب الحرارة للخارج فتؤدي لرفع درجة حرارة النظام." }
@@ -280,64 +243,109 @@
       ],
       schedule: [
         { id: 1, day: "السبت", subject: "الفيزياء", time: "4:00 - 6:00 مساءً", note: "الفصل الأول - المتسعات" },
-        { id: 2, day: "الأحد", subject: "الرياضيات", time: "4:00 - 6:00 مساءً", note: "الأعداد المركبة" },
-        { id: 3, day: "الاثنين", subject: "الكيمياء", time: "5:00 - 7:00 مساءً", note: "الثرموداينمك" }
+        { id: 2, day: "الأحد", subject: "الرياضيات", time: "4:00 - 6:00 مساءً", note: "الأعداد المركبة" }
       ],
       tasks: [
-        { id: 1, text: "مراجعة قوانين الفصل الأول فيزياء", done: false },
-        { id: 2, text: "حل 5 أسئلة وزارية رياضيات", done: true }
+        { id: 1, text: "مراجعة وتلاوة ورد اليوم من القرآن", done: false },
+        { id: 2, text: "حل مسائل الفصل الأول فيزياء", done: true }
       ],
       pdfs: [
         { id: 1, title: "ملخص قوانين الفيزياء الشامل", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" }
       ]
     };
 
-    let appData = JSON.parse(localStorage.getItem('studyPlatformData')) || defaultData;
+    let appData = JSON.parse(localStorage.getItem('studyPlatformDataClean')) || defaultData;
     let editMode = false;
 
     function saveData() {
-      localStorage.setItem('studyPlatformData', JSON.stringify(appData));
+      localStorage.setItem('studyPlatformDataClean', JSON.stringify(appData));
     }
 
-    // إدارة مفتاح Groq API
-    function loadApiKey() {
-      const savedKey = localStorage.getItem('groq_api_key') || '';
-      const input = document.getElementById('groqApiKeyInput');
-      const status = document.getElementById('apiKeyStatus');
-      if (savedKey) {
-        input.value = savedKey;
-        status.textContent = "✅ المفتاح محفوظ وجاهز للعمل";
-        status.className = "text-xs mt-1 text-emerald-700 font-bold";
-      } else {
-        status.textContent = "⚠️ يرجى لصق مفتاح Groq (يبدأ بـ gsk_) والضغط على حفظ";
-        status.className = "text-xs mt-1 text-amber-700 font-bold";
-      }
+    // تغيير الخلفية الطبيعية
+    function changeBackground(url) {
+      appData.currentBg = url;
+      saveData();
+      applyBackground();
     }
 
-    function saveApiKey() {
-      const val = document.getElementById('groqApiKeyInput').value.trim();
-      const status = document.getElementById('apiKeyStatus');
-      if (!val.startsWith('gsk_')) {
-        status.textContent = "❌ المفتاح غير صحيح! يجب أن يبدأ بـ gsk_";
-        status.className = "text-xs mt-1 text-rose-600 font-bold";
+    function applyBackground() {
+      const bg = appData.currentBg || defaultData.currentBg;
+      document.getElementById('pageBody').style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('${bg}')`;
+      const selector = document.getElementById('bgSelector');
+      if (selector) selector.value = bg;
+    }
+
+    // إدارة نظام الأصوات (قرآن ومطر)
+    let isAudioPlaying = false;
+    const audioUrls = {
+      quran_mishary: "https://server8.mp3quran.net/afs/002.mp3", // سورة البقرة - العفاسي
+      quran_sudais: "https://server11.mp3quran.net/sds/001.mp3",  // الفاتحة والبقرة - السديس
+      quran_basit: "https://server7.mp3quran.net/abdulsamad/001.mp3", // عبد الباسط
+      quran_ghamdi: "https://server6.mp3quran.net/gmd/001.mp3", // سعد الغامدي
+      rain: "https://cdn.pixabay.com/download/audio/2021/08/09/audio_193988cb62.mp3?filename=rain-and-thunder-nature-sounds-7575.mp3",
+      waves: "https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32c84278.mp3?filename=gentle-ocean-waves-111162.mp3",
+      forest: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c3479a9e.mp3?filename=forest-birds-ambience-10815.mp3"
+    };
+
+    function changeAmbientSound(type) {
+      const audioEl = document.getElementById('ambientAudioElement');
+      if (type === 'none') {
+        audioEl.pause();
+        isAudioPlaying = false;
+        document.getElementById('audioToggleBtn').textContent = "تشغيل الصوت 🔊";
+        document.getElementById('audioStatus').textContent = "متوقف";
         return;
       }
-      localStorage.setItem('groq_api_key', val);
-      status.textContent = "✅ تم حفظ المفتاح بنجاح! يمكنك الآن سؤال المعلم الذكي";
-      status.className = "text-xs mt-1 text-emerald-700 font-bold";
+      if (audioUrls[type]) {
+        audioEl.src = audioUrls[type];
+        if (isAudioPlaying) {
+          audioEl.play().catch(e => console.log(e));
+          document.getElementById('audioStatus').textContent = "قيد التشغيل 🎶";
+        }
+      }
     }
 
-    // التبويبات
+    function toggleAmbientAudio() {
+      const audioEl = document.getElementById('ambientAudioElement');
+      const select = document.getElementById('soundType');
+      const btn = document.getElementById('audioToggleBtn');
+      const status = document.getElementById('audioStatus');
+
+      if (select.value === 'none') {
+        alert("يرجى اختيار نوع الصوت أو التلاوة أولاً من القائمة.");
+        return;
+      }
+
+      if (isAudioPlaying) {
+        audioEl.pause();
+        isAudioPlaying = false;
+        btn.textContent = "تشغيل الصوت 🔊";
+        status.textContent = "متوقف";
+      } else {
+        if (!audioEl.src) {
+          audioEl.src = audioUrls[select.value];
+        }
+        audioEl.play().then(() => {
+          isAudioPlaying = true;
+          btn.textContent = "إيقاف الصوت 🔇";
+          status.textContent = "قيد التشغيل 🎶";
+        }).catch(err => {
+          alert("تعذر تشغيل الصوت تلقائياً، حاول مرة أخرى.");
+        });
+      }
+    }
+
+    // التنقل بين التبويبات
     function switchTab(tabId) {
       document.querySelectorAll('.section-panel').forEach(el => el.classList.add('hidden'));
       document.getElementById('sec-' + tabId).classList.remove('hidden');
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('tab-active');
-        btn.classList.add('text-slate-600');
+        btn.classList.add('text-slate-700', 'bg-white/70');
       });
       const activeBtn = document.getElementById('tab-' + tabId);
       activeBtn.classList.add('tab-active');
-      activeBtn.classList.remove('text-slate-600');
+      activeBtn.classList.remove('text-slate-700', 'bg-white/70');
     }
 
     // وضع التعديل
@@ -349,98 +357,44 @@
       renderAll();
     }
 
-    // المعلم الذكي (الاتصال الفعلي مع Groq API باستخدام النموذج الصحيح)
-    function updateAiSubject() {
-      appData.aiSubject = document.getElementById('aiSubjectSelect').value;
-      document.getElementById('aiCurrentSpecText').textContent = "جاهز للإجابة • تخصص: " + appData.aiSubject;
-      saveData();
+    // المؤقت
+    let timerSeconds = 25 * 60;
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const secs = String(timerSeconds % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
     }
 
-    function saveAiPrompt() {
-      appData.aiPrompt = document.getElementById('aiSystemPrompt').value;
-      saveData();
+    function setTimerMinutes(m) {
+      pauseTimer();
+      timerSeconds = m * 60;
+      updateTimerDisplay();
     }
 
-    function renderQuickPrompts() {
-      const container = document.getElementById('quickPromptsContainer');
-      container.innerHTML = appData.quickPrompts.map(p => `
-        <button onclick="useQuickPrompt('${p}')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-100 text-slate-700 hover:text-indigo-700 text-xs font-bold transition">${p}</button>
-      `).join('');
-    }
-
-    function useQuickPrompt(text) {
-      const input = document.getElementById('chatInput');
-      input.value = text + " في موضوع: ";
-      input.focus();
-    }
-
-    function appendMessage(sender, text, isError = false) {
-      const box = document.getElementById('chatMessages');
-      const div = document.createElement('div');
-      if (sender === 'user') {
-        div.className = "bg-indigo-600 text-white rounded-2xl rounded-tl-none p-3.5 max-w-[85%] mr-auto shadow-sm text-sm leading-relaxed";
-        div.textContent = text;
-      } else {
-        div.className = `bg-white border ${isError ? 'border-rose-300 bg-rose-50' : 'border-slate-200'} rounded-2xl rounded-tr-none p-3.5 max-w-[85%] shadow-sm`;
-        div.innerHTML = `<p class="text-xs font-bold ${isError ? 'text-rose-600' : 'text-indigo-600'} mb-1">✨ المعلم الذكي</p><div class="text-sm leading-relaxed whitespace-pre-wrap">${text}</div>`;
-      }
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendAiMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const userText = input.value.trim();
-      if (!userText) return;
-
-      const apiKey = localStorage.getItem('groq_api_key');
-      if (!apiKey) {
-        appendMessage('ai', '⚠️ يرجى إدخال مفتاح Groq API في الخانة العلوية والضغط على "حفظ المفتاح" أولاً لكي أتمكن من الإجابة.', true);
-        return;
-      }
-
-      appendMessage('user', userText);
-      input.value = '';
-      const sendBtn = document.getElementById('sendBtn');
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'جاري التفكير...';
-
-      try {
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'lama3-8b-8192',
-            messages: [
-              { role: 'system', content: `${appData.aiPrompt} تخصصك الحالي هو: ${appData.aiSubject}. أجب باللغة العربية دائماً.` },
-              { role: 'user', content: userText }
-            ],
-            temperature: 0.6,
-            max_tokens: 1500
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error?.message || 'فشل الاتصال بخادم Groq');
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          pauseTimer();
+          alert("انتهى وقت التركيز! استرح قليلاً يا بطل.");
         }
-
-        const reply = data.choices[0].message.content;
-        appendMessage('ai', reply);
-      } catch (err) {
-        appendMessage('ai', `حدث خطأ أثناء الاتصال: ${err.message}\nتأكد من أن مفتاح Groq صحيح ومتصل بالإنترنت.`, true);
-      } finally {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'إرسال';
-      }
+      }, 1000);
     }
 
-    function clearChat() {
-      document.getElementById('chatMessages').innerHTML = '';
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = 25 * 60;
+      updateTimerDisplay();
     }
 
     // الأسئلة الوزارية
@@ -455,9 +409,9 @@
       );
 
       list.innerHTML = filtered.map(item => `
-        <div class="card p-4 space-y-2.5">
+        <div class="card p-4 space-y-2.5 shadow-sm">
           <div class="flex justify-between items-center">
-            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">${item.subject} • ${item.year}</span>
+            <span class="px-2.5 py-1 bg-teal-50 text-teal-800 rounded-lg text-xs font-bold">${item.subject} • ${item.year}</span>
             ${editMode ? `<button onclick="deleteMinisterial(${item.id})" class="text-xs text-rose-600 font-bold">حذف ✕</button>` : ''}
           </div>
           <p class="font-bold text-sm text-slate-900">س: ${item.q}</p>
@@ -465,15 +419,8 @@
             <summary class="text-xs font-bold text-emerald-700 cursor-pointer">عرض الجواب النموذجي</summary>
             <p class="text-xs text-slate-700 mt-2 whitespace-pre-wrap leading-relaxed">${item.a}</p>
           </details>
-          <button onclick="askAiAboutQuestion('${item.q.replace(/'/g, "\\'")}')" class="text-xs text-indigo-600 font-bold hover:underline">🤖 اطلب شرحاً مفصلاً من المعلم الذكي</button>
         </div>
       `).join('');
-    }
-
-    function askAiAboutQuestion(q) {
-      switchTab('ai');
-      document.getElementById('chatInput').value = "اشرح لي هذا السؤال الوزاري بالتفصيل: " + q;
-      document.getElementById('chatInput').focus();
     }
 
     function deleteMinisterial(id) {
@@ -489,7 +436,7 @@
         <input id="mYear" placeholder="السنة والدور (مثلاً: 2024 دور أول)" class="w-full p-2.5 border rounded-xl text-sm">
         <textarea id="mQ" placeholder="نص السؤال..." rows="2" class="w-full p-2.5 border rounded-xl text-sm"></textarea>
         <textarea id="mA" placeholder="الجواب النموذجي..." rows="3" class="w-full p-2.5 border rounded-xl text-sm"></textarea>
-        <button onclick="saveNewMinisterial()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
+        <button onclick="saveNewMinisterial()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
       `;
       showModal();
     }
@@ -516,7 +463,7 @@
       container.innerHTML = appData.exams.map((ex, idx) => `
         <div class="border-b border-slate-100 pb-4 space-y-2">
           <div class="flex justify-between">
-            <p class="font-bold text-sm">${idx + 1}. ${ex.q}</p>
+            <p class="font-bold text-sm text-slate-900">${idx + 1}. ${ex.q}</p>
             ${editMode ? `<button onclick="deleteExam(${ex.id})" class="text-xs text-rose-600 font-bold">حذف</button>` : ''}
           </div>
           <div class="grid sm:grid-cols-2 gap-2">
@@ -529,7 +476,7 @@
           </div>
         </div>
       `).join('') + `
-        <button onclick="gradeExam()" class="px-6 py-2.5 bg-indigo-600 text-white font-bold text-sm rounded-xl">تصحيح الامتحان وعرض النتيجة</button>
+        <button onclick="gradeExam()" class="px-6 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl shadow-sm">تصحيح الامتحان وعرض النتيجة</button>
         <div id="examResult" class="font-extrabold text-base"></div>
       `;
     }
@@ -542,7 +489,7 @@
       });
       const res = document.getElementById('examResult');
       res.textContent = `نتيجتك: ${score} من ${appData.exams.length}`;
-      res.className = score === appData.exams.length ? "font-extrabold text-base text-emerald-600" : "font-extrabold text-base text-indigo-600";
+      res.className = score === appData.exams.length ? "font-extrabold text-base text-emerald-600" : "font-extrabold text-base text-teal-600";
     }
 
     function deleteExam(id) {
@@ -565,7 +512,7 @@
           <option value="2">الإجابة الصحيحة: الخيار الثالث</option>
           <option value="3">الإجابة الصحيحة: الخيار الرابع</option>
         </select>
-        <button onclick="saveNewExam()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
+        <button onclick="saveNewExam()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
       `;
       showModal();
     }
@@ -585,12 +532,12 @@
     function renderSchedule() {
       const grid = document.getElementById('scheduleGrid');
       grid.innerHTML = appData.schedule.map(s => `
-        <div class="card p-4 border-r-4 border-r-indigo-600 space-y-1.5">
+        <div class="card p-4 border-r-4 border-r-teal-600 space-y-1.5 shadow-sm">
           <div class="flex justify-between items-center">
-            <span class="text-xs font-extrabold text-indigo-600">${s.day}</span>
+            <span class="text-xs font-extrabold text-teal-700">${s.day}</span>
             ${editMode ? `<button onclick="deleteSchedule(${s.id})" class="text-xs text-rose-600 font-bold">✕</button>` : ''}
           </div>
-          <h3 class="font-extrabold text-base">${s.subject}</h3>
+          <h3 class="font-extrabold text-base text-slate-800">${s.subject}</h3>
           <p class="text-xs text-slate-500">🕒 ${s.time}</p>
           <p class="text-xs text-slate-700 bg-slate-50 p-2 rounded-lg">${s.note}</p>
         </div>
@@ -610,7 +557,7 @@
         <input id="sSubj" placeholder="المادة" class="w-full p-2.5 border rounded-xl text-sm">
         <input id="sTime" placeholder="الوقت (مثلاً: 4:00 - 6:00 مساءً)" class="w-full p-2.5 border rounded-xl text-sm">
         <input id="sNote" placeholder="الموضوع أو الملاحظة" class="w-full p-2.5 border rounded-xl text-sm">
-        <button onclick="saveNewSchedule()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">إضافة</button>
+        <button onclick="saveNewSchedule()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">إضافة</button>
       `;
       showModal();
     }
@@ -627,69 +574,13 @@
       closeModal();
     }
 
-    // المؤقت والصوت
-    let timerSeconds = 25 * 60;
-    let timerInterval = null;
-
-    function updateTimerDisplay() {
-      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-      const secs = String(timerSeconds % 60).padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
-    }
-
-    function setTimerMinutes(m) {
-      pauseTimer();
-      timerSeconds = m * 60;
-      updateTimerDisplay();
-    }
-
-    function startTimer() {
-      if (timerInterval) return;
-      timerInterval = setInterval(() => {
-        if (timerSeconds > 0) {
-          timerSeconds--;
-          updateTimerDisplay();
-        } else {
-          pauseTimer();
-          playAlarmSound();
-          alert("انتهى الوقت! أحسنت يا بطل.");
-        }
-      }, 1000);
-    }
-
-    function pauseTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
-
-    function resetTimer() {
-      pauseTimer();
-      timerSeconds = 25 * 60;
-      updateTimerDisplay();
-    }
-
-    function playAlarmSound() {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const type = document.getElementById('soundType').value;
-      osc.type = type === 'digital' ? 'square' : type === 'chime' ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(type === 'chime' ? 587.33 : 880, ctx.currentTime);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 1);
-    }
-
     // المهام
     function renderTasks() {
       const list = document.getElementById('tasksList');
       list.innerHTML = appData.tasks.map(t => `
-        <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+        <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
           <label class="flex items-center gap-2.5 cursor-pointer flex-1">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 accent-indigo-600">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 accent-teal-600">
             <span class="text-sm ${t.done ? 'line-through text-slate-400' : 'text-slate-800 font-semibold'}">${t.text}</span>
           </label>
           <button onclick="deleteTask(${t.id})" class="text-xs text-rose-500 font-bold px-2">✕</button>
@@ -729,7 +620,7 @@
     function renderPdfs() {
       const grid = document.getElementById('pdfGrid');
       grid.innerHTML = appData.pdfs.map(p => `
-        <div class="card p-4 flex flex-col justify-between gap-3">
+        <div class="card p-4 flex flex-col justify-between gap-3 shadow-sm">
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-2.5">
               <span class="text-2xl">📄</span>
@@ -737,7 +628,7 @@
             </div>
             ${editMode ? `<button onclick="deletePdf(${p.id})" class="text-xs text-rose-600 font-bold">✕</button>` : ''}
           </div>
-          <a href="${p.url}" target="_blank" class="text-center py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl transition">فتح وقراءة الملف</a>
+          <a href="${p.url}" target="_blank" class="text-center py-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-bold text-xs rounded-xl transition">فتح وقراءة الملف</a>
         </div>
       `).join('');
     }
@@ -755,7 +646,7 @@
       document.getElementById('modalBody').innerHTML = `
         <input id="pTitle" placeholder="عنوان الملزمة" class="w-full p-2.5 border rounded-xl text-sm">
         <input id="pUrl" placeholder="رابط الملف (https://...)" class="w-full p-2.5 border rounded-xl text-sm" dir="ltr">
-        <button onclick="saveNewPdfLink()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">حفظ الرابط</button>
+        <button onclick="saveNewPdfLink()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ الرابط</button>
       `;
       showModal();
     }
@@ -789,7 +680,7 @@
       const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'study-platform-backup.json';
+      a.download = 'study-platform-clean-backup.json';
       a.click();
     }
 
@@ -811,8 +702,8 @@
     }
 
     function resetAllData() {
-      if (confirm("هل أنت متأكد من استعادة جميع البيانات الافتراضية؟")) {
-        localStorage.removeItem('studyPlatformData');
+      if (confirm("هل أنت متأكد من استعادة البيانات الافتراضية؟")) {
+        localStorage.removeItem('studyPlatformDataClean');
         appData = JSON.parse(JSON.stringify(defaultData));
         renderAll();
       }
@@ -834,10 +725,7 @@
     function renderAll() {
       document.getElementById('siteTitle').textContent = appData.siteTitle;
       document.getElementById('customSiteTitleInput').value = appData.siteTitle;
-      document.getElementById('aiSubjectSelect').value = appData.aiSubject;
-      document.getElementById('aiSystemPrompt').value = appData.aiPrompt;
-      document.getElementById('aiCurrentSpecText').textContent = "جاهز للإجابة • تخصص: " + appData.aiSubject;
-      renderQuickPrompts();
+      applyBackground();
       renderMinisterial();
       renderExams();
       renderSchedule();
@@ -845,8 +733,7 @@
       renderPdfs();
     }
 
-    // تشغيل التطبيق عند الفتح
-    loadApiKey();
+    // تشغيل التطبيق عند التحميل
     renderAll();
   </script>
 </body>
