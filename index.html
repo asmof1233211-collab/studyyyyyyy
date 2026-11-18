@@ -3,356 +3,349 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>منصة الدراسة الذكية</title>
+  <title>منصة الدراسة الذكية - وضع التركيز</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; transition: background 0.5s ease; }
-    .tab-active { background-color: #0d9488; color: white; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25); }
-    .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    body { font-family: 'Cairo', sans-serif; color: #fff; transition: background 0.8s ease; }
+    .glass-card { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(12px); border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .glass-nav { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 9999px; }
   </style>
 </head>
-<body id="pageBody" class="min-h-screen flex flex-col bg-slate-50 bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');">
+<body id="pageBody" class="min-h-screen flex flex-col bg-cover bg-center relative" style="background-image: linear-gradient(rgba(5, 10, 25, 0.5), rgba(5, 10, 25, 0.7)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80');">
 
-  <!-- الشريط العلوي -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+  <!-- الشريط العلوي العائم الشفاف (مطابق لتصميم التطبيق) -->
+  <header class="glass-nav sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- شعار المنصة واسمها -->
       <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-extrabold text-xl shadow-md">د</div>
+        <div class="w-10 h-10 rounded-2xl bg-indigo-600/80 border border-indigo-400 text-white flex items-center justify-center font-extrabold text-lg shadow-lg">🌙</div>
         <div>
-          <h1 id="siteTitle" class="font-extrabold text-lg text-slate-900 leading-tight">منصة الدراسة الذكية</h1>
-          <p class="text-xs text-slate-500">مساعدك الدراسي للاسترخاء والإنتاجية</p>
+          <h1 id="siteTitle" class="font-extrabold text-base text-white tracking-wide">تطبيق مجرتي</h1>
+          <p class="text-[11px] text-indigo-200">خطوة هادئة... نحو حلمك</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="toggleEditMode()" id="editModeBtn" class="px-3.5 py-2 rounded-xl text-sm font-bold border border-slate-300 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5 bg-white">
+      <!-- أزرار التحكم العلوية العائمة (خلفيات، أصوات، تعديل) -->
+      <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 shadow-inner">
+        <button onclick="openBgModal()" title="اختر عالمك (الخلفيات)" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm flex items-center gap-1">
+          <span>🎨</span>
+        </button>
+        <button onclick="openAudioModal()" title="أصوات الاسترخاء والقرآن" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm flex items-center gap-1">
+          <span>🎵</span>
+        </button>
+        <button onclick="toggleEditMode()" id="editModeBtn" title="وضع التعديل" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm">
           <span>⚙️</span>
-          <span id="editModeText">وضع التعديل: مغلق</span>
         </button>
       </div>
     </div>
 
-    <!-- شريط التنقل (بدون المعلم الذكي) -->
-    <nav class="max-w-6xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto">
-      <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn tab-active px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition shadow-sm">⏱️ المؤقت والأصوات</button>
-      <button onclick="switchTab('ministerial')" id="tab-ministerial" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📚 الأسئلة الوزارية</button>
-      <button onclick="switchTab('exams')" id="tab-exams" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📝 الامتحانات</button>
-      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📅 الجدول الدراسي</button>
-      <button onclick="switchTab('pdfs')" id="tab-pdfs" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">📂 الملخصات و PDF</button>
-      <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white/70 hover:bg-white whitespace-nowrap transition">🛠️ الإدارة والنسخ</button>
+    <!-- شريط التنقل السريع بين الأقسام -->
+    <nav class="max-w-6xl mx-auto pt-2.5 flex gap-2 overflow-x-auto pb-1">
+      <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md transition whitespace-nowrap">⏱️ جو التركيز</button>
+      <button onclick="switchTab('ministerial')" id="tab-ministerial" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📚 الأسئلة الوزارية</button>
+      <button onclick="switchTab('exams')" id="tab-exams" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📝 الامتحانات</button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📅 الجدول</button>
+      <button onclick="switchTab('pdfs')" id="tab-pdfs" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📂 الملازم PDF</button>
     </nav>
   </header>
 
   <!-- المحتوى الرئيسي -->
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 space-y-6">
 
-    <!-- 1. قسم المؤقت والمهام وأصوات الاسترخاء والقرآن -->
-    <section id="sec-timer" class="section-panel grid md:grid-cols-2 gap-6">
+    <!-- 1. قسم المؤقت والتركيز (مطابق تماماً لصورة التطبيق) -->
+    <section id="sec-timer" class="section-panel grid md:grid-cols-12 gap-6 items-center">
       
-      <!-- المؤقت وخلفيات الطبيعة والأصوات -->
-      <div class="card p-6 text-center space-y-5 shadow-xl border-teal-100">
-        <div class="flex items-center justify-between">
-          <h2 class="font-extrabold text-base text-slate-800">⏱️ مؤقت التركيز والاسترخاء</h2>
-          <!-- خيار تغيير الخلفية الطبيعية -->
-          <div class="text-right">
-            <label class="text-xs font-bold text-slate-600 block mb-1">اختر الخلفية الطبيعية:</label>
-            <select id="bgSelector" onchange="changeBackground(this.value)" class="px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold bg-white shadow-sm">
-              <option value="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80">🌊 شاطئ البحر الهادئ</option>
-              <option value="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80">🌲 غابة خضراء مريحة</option>
-              <option value="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80">🏔️ جبال ونجوم هادئة</option>
-              <option value="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80">🌧️ جو ممطر منعش</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="flex justify-center gap-2">
-          <button onclick="setTimerMinutes(25)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition">25 د دراسة</button>
-          <button onclick="setTimerMinutes(50)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition">50 د دراسة</button>
-          <button onclick="setTimerMinutes(5)" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition">5 د استراحة</button>
-        </div>
-
-        <div id="timerDisplay" class="text-6xl font-extrabold text-slate-900 tracking-wider py-4 drop-shadow-sm" dir="ltr">25:00</div>
-        
-        <div class="flex justify-center gap-3">
-          <button onclick="startTimer()" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl shadow-md transition">ابدأ التركيز</button>
-          <button onclick="pauseTimer()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md transition">إيقاف مؤقت</button>
-          <button onclick="resetTimer()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm rounded-xl transition">إعادة ضبط</button>
-        </div>
-
-        <!-- حزمة الأصوات (قرآن ومطر) -->
-        <div class="pt-4 border-t border-slate-100 space-y-3 text-right">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-extrabold text-teal-900 flex items-center gap-1.5">
-              <span>🎧</span> أصوات خلفية هادئة وقرآن كريم:
-            </label>
-            <span id="audioStatus" class="text-xs text-slate-500 font-semibold">متوقف</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <select id="soundType" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white shadow-sm" onchange="changeAmbientSound(this.value)">
-              <option value="none">-- بدون صوت خلفي --</option>
-              <optgroup label="📖 تلاوات القرآن الكريم">
-                <option value="quran_mishary">سورة البقرة - الشيخ مشاري العفاسي</option>
-                <option value="quran_sudais">تلاوة خاشعة - الشيخ عبد الرحمن السديس</option>
-                <option value="quran_basit">ترتيل هادئ - الشيخ عبد الباسط عبد الصمد</option>
-                <option value="quran_ghamdi">آيات السكينة واليقين - سعد الغامدي</option>
-              </optgroup>
-              <optgroup label="🌿 أصوات الطبيعة والاسترخاء">
-                <option value="rain">أصوات المطر الهادئ</option>
-                <option value="waves">أمواج البحر الناعمة</option>
-                <option value="forest">نسيم الغابة والطيور</option>
-              </optgroup>
-            </select>
-
-            <div class="flex gap-2">
-              <button onclick="toggleAmbientAudio()" id="audioToggleBtn" class="flex-1 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-sm">تشغيل الصوت 🔊</button>
-            </div>
-          </div>
-          <p class="text-[11px] text-slate-500 leading-relaxed">* ملاحظة: تلاوات القرآن الكريم تعمل بروابط بث مباشرة ونقية لتساعدك على الحفظ والتركيز بصفاء ذهن.</p>
+      <!-- رسالة التحفيز العلوية العائمة -->
+      <div class="md:col-span-12 flex justify-center">
+        <div class="bg-slate-900/60 backdrop-blur-md px-5 py-2 rounded-full border border-white/10 flex items-center gap-2 shadow-lg">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="currentStatusBadge" class="text-xs font-bold tracking-wide text-amber-200">مراجعة هادئة</span>
         </div>
       </div>
 
-      <!-- المهام اليومية -->
-      <div class="card p-6 space-y-4 shadow-xl border-teal-100">
-        <div class="flex items-center justify-between">
-          <h2 class="font-extrabold text-base text-slate-800">✅ مهامي الدراسية اليوم</h2>
-          <span id="taskProgressText" class="text-xs font-extrabold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg">0%</span>
+      <!-- يسار الشاشة: مؤقت البومودورو الدائري الأنيق -->
+      <div class="md:col-span-5 flex flex-col items-center justify-center glass-card p-6 space-y-4">
+        <div class="flex gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-white/10">
+          <button onclick="setTimerMinutes(25)" class="px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600/80 text-white shadow">25 د</button>
+          <button onclick="setTimerMinutes(50)" class="px-3 py-1 text-xs font-bold rounded-lg hover:bg-white/10 text-indigo-200">50 د</button>
+          <button onclick="setTimerMinutes(5)" class="px-3 py-1 text-xs font-bold rounded-lg hover:bg-white/10 text-emerald-300">5 د استراحة</button>
         </div>
-        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner">
-          <div id="taskProgressBar" class="bg-teal-600 h-full transition-all duration-300" style="width: 0%"></div>
+
+        <!-- دائرة المؤقت -->
+        <div class="w-48 h-48 rounded-full border-4 border-indigo-500/40 flex flex-col items-center justify-center bg-slate-950/40 shadow-inner relative">
+          <span class="text-xs text-indigo-300 font-bold mb-1">وقت الدراسة</span>
+          <div id="timerDisplay" class="text-4xl font-extrabold text-white tracking-widest drop-shadow" dir="ltr">25:00</div>
+          <span class="text-[10px] text-slate-400 mt-1">الوضع المتبقي</span>
+        </div>
+
+        <div class="flex gap-2 w-full">
+          <button onclick="startTimer()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition">ابدأ</button>
+          <button onclick="pauseTimer()" class="px-4 py-2.5 bg-amber-600/80 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-lg transition">إيقاف</button>
+          <button onclick="resetTimer()" class="px-4 py-2.5 bg-slate-700/80 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">إعادة</button>
+        </div>
+      </div>
+
+      <!-- يمين الشاشة: المهام اليومية في جو هادئ -->
+      <div class="md:col-span-7 glass-card p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-sm text-white flex items-center gap-2"><span>✨</span> مهامي الدراسية اليوم</h2>
+          <span id="taskProgressText" class="text-xs font-bold text-indigo-300 bg-indigo-950/60 px-3 py-1 rounded-xl border border-indigo-500/30">0%</span>
+        </div>
+        <div class="w-full bg-slate-900/80 h-2 rounded-full overflow-hidden border border-white/10">
+          <div id="taskProgressBar" class="bg-indigo-500 h-full transition-all duration-300" style="width: 0%"></div>
         </div>
         <form onsubmit="addTask(event)" class="flex gap-2">
-          <input type="text" id="newTaskInput" placeholder="أضف مهمة جديدة (مثال: حفظ آيات أو مراجعة فصل)..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white/80 focus:outline-none focus:border-teal-500 shadow-sm" required>
-          <button type="submit" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl shadow-md transition">إضافة</button>
+          <input type="text" id="newTaskInput" placeholder="أضف مهمة جديدة (مثلاً: حفظ صفحتين من سورة البقرة)..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-white/15 bg-slate-900/70 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-inner" required>
+          <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition">إضافة</button>
         </form>
-        <ul id="tasksList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></ul>
+        <ul id="tasksList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></ul>
       </div>
+
     </section>
 
     <!-- 2. قسم الأسئلة الوزارية -->
     <section id="sec-ministerial" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap gap-2 flex-1">
-          <input type="text" id="minSearch" oninput="renderMinisterial()" placeholder="ابحث في الأسئلة الوزارية..." class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm flex-1 min-w-[200px] bg-white">
-          <select id="minFilterSubject" onchange="renderMinisterial()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold bg-white">
+          <input type="text" id="minSearch" oninput="renderMinisterial()" placeholder="ابحث في الأسئلة الوزارية..." class="px-3.5 py-2 rounded-xl border border-white/15 bg-slate-900/70 text-xs text-white placeholder-slate-400 flex-1 min-w-[200px]">
+          <select id="minFilterSubject" onchange="renderMinisterial()" class="px-3.5 py-2 rounded-xl border border-white/15 bg-slate-900 text-xs text-white font-bold">
             <option value="all">كل المواد</option>
             <option value="الفيزياء">الفيزياء</option>
             <option value="الرياضيات">الرياضيات</option>
             <option value="الكيمياء">الكيمياء</option>
             <option value="الأحياء">الأحياء</option>
-            <option value="اللغة العربية">اللغة العربية</option>
           </select>
         </div>
-        <button onclick="openAddQuestionModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة سؤال وزاري</button>
+        <button onclick="openAddQuestionModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة سؤال وزاري</button>
       </div>
       <div id="ministerialList" class="grid md:grid-cols-2 gap-4"></div>
     </section>
 
     <!-- 3. قسم الامتحانات -->
     <section id="sec-exams" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex items-center justify-between shadow-md">
+      <div class="glass-card p-4 flex items-center justify-between">
         <div>
-          <h2 class="font-extrabold text-base text-slate-800">الاختبارات التفاعلية</h2>
-          <p class="text-xs text-slate-500">اختبر نفسك مع تصحيح فوري ونتيجة دقيقة</p>
+          <h2 class="font-extrabold text-sm text-white">الاختبارات التفاعلية</h2>
+          <p class="text-[11px] text-slate-300">اختبر نفسك مع تصحيح فوري</p>
         </div>
-        <button onclick="openAddExamModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة سؤال امتحان</button>
+        <button onclick="openAddExamModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة امتحان</button>
       </div>
-      <div id="examContainer" class="card p-6 space-y-5 shadow-md"></div>
+      <div id="examContainer" class="glass-card p-6 space-y-5"></div>
     </section>
 
     <!-- 4. قسم الجدول الدراسي -->
     <section id="sec-schedule" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex items-center justify-between shadow-md">
-        <h2 class="font-extrabold text-base text-slate-800">الجدول الدراسي الأسبوعي</h2>
-        <button onclick="openAddScheduleModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">+ إضافة حصة للجدول</button>
+      <div class="glass-card p-4 flex items-center justify-between">
+        <h2 class="font-extrabold text-sm text-white">الجدول الدراسي الأسبوعي</h2>
+        <button onclick="openAddScheduleModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة حصة</button>
       </div>
       <div id="scheduleGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
     </section>
 
-    <!-- 5. قسم الملخصات و PDF -->
+    <!-- 5. قسم الملازم و PDF -->
     <section id="sec-pdfs" class="section-panel hidden space-y-4">
-      <div class="card p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 class="font-extrabold text-base text-slate-800">📂 مكتبة الملازم والملفات (PDF)</h2>
-          <p class="text-xs text-slate-500">ارفع ملفات PDF من جهازك أو أضف روابط ملازمك الدراسية</p>
+          <h2 class="font-extrabold text-sm text-white">📂 مكتبة الملازم والملفات (PDF)</h2>
         </div>
         <div class="flex gap-2">
-          <label class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl cursor-pointer shadow-sm transition">
-            + رفع ملف PDF من الجهاز
+          <label class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl cursor-pointer shadow transition">
+            + رفع ملف PDF
             <input type="file" accept="application/pdf" onchange="handlePdfUpload(event)" class="hidden">
           </label>
-          <button onclick="openAddLinkModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-xl shadow-sm transition">+ إضافة رابط ملزمة</button>
         </div>
       </div>
       <div id="pdfGrid" class="grid md:grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- 6. قسم الإدارة والنسخ الاحتياطي -->
-    <section id="sec-admin" class="section-panel hidden space-y-4">
-      <div class="card p-6 space-y-4 shadow-md">
-        <h2 class="font-extrabold text-base text-slate-800">🛠️ إعدادات المنصة والنسخ الاحتياطي</h2>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المنصة:</label>
-          <div class="flex gap-2 max-w-md">
-            <input type="text" id="customSiteTitleInput" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm bg-white">
-            <button onclick="updateSiteTitle()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl shadow-sm">تحديث الاسم</button>
-          </div>
-        </div>
-        <div class="pt-4 border-t border-slate-100 flex flex-wrap gap-3">
-          <button onclick="exportData()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm">⬇️ تصدير نسخة احتياطية (JSON)</button>
-          <label class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold rounded-xl cursor-pointer shadow-sm">
-            ⬆️ استيراد نسخة احتياطية
-            <input type="file" accept=".json" onchange="importData(event)" class="hidden">
-          </label>
-          <button onclick="resetAllData()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl shadow-sm">🗑️ استعادة الضبط الافتراضي</button>
-        </div>
-      </div>
-    </section>
-
   </main>
 
-  <!-- نافذة منبثقة عامة للإضافة -->
-  <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 id="modalTitle" class="font-extrabold text-base text-slate-900">إضافة عنصر</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+  <!-- نافذة اختيار الخلفيات (مطابقة لصورة "اختر عالمك") -->
+  <div id="bgModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="glass-card max-w-xl w-full p-6 space-y-4 border border-white/20">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <h3 class="font-extrabold text-base text-white">🌌 اختر عالمك (خلفيات هادئة ومريحة)</h3>
+        <button onclick="closeBgModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+      </div>
+      <div class="grid grid-cols-2 gap-3 max-h-80 overflow-y-auto p-1">
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
+          <p class="p-2 text-xs font-bold text-center text-white">شاطئ هادئ</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
+          <p class="p-2 text-xs font-bold text-center text-white">ليلة هادئة ونجوم</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
+          <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
+          <p class="p-2 text-xs font-bold text-center text-white">غابة خضراء مريحة</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
+          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
+          <p class="p-2 text-xs font-bold text-center text-white">جو ممطر منعش</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة الأصوات والقرآن (مطابقة تماماً لصورة قائمة الأصوات) -->
+  <div id="audioModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="glass-card max-w-lg w-full p-6 space-y-4 border border-white/20">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <h3 class="font-extrabold text-base text-white">🎧 أصوات المنصة (قرآن كريم وأصوات طبيعية)</h3>
+        <button onclick="closeAudioModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+      </div>
+
+      <div class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+        
+        <!-- تلاوات القرآن الكريم -->
+        <div onclick="playAudio('https://server8.mp3quran.net/afs/002.mp3', 'سورة البقرة - مشاري العفاسي')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
+          <div>
+            <p class="text-xs font-extrabold text-white">📖 سورة البقرة - الشيخ مشاري العفاسي</p>
+            <p class="text-[10px] text-indigo-300">تلاوة خاشعة وهادئة</p>
+          </div>
+          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+        </div>
+
+        <div onclick="playAudio('https://server11.mp3quran.net/sds/001.mp3', 'تلاوة خاشعة - عبد الرحمن السديس')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
+          <div>
+            <p class="text-xs font-extrabold text-white">📖 تلاوة خاشعة - الشيخ عبد الرحمن السديس</p>
+            <p class="text-[10px] text-indigo-300">صفاء ذهني وتبرك</p>
+          </div>
+          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+        </div>
+
+        <div onclick="playAudio('https://server7.mp3quran.net/abdulsamad/001.mp3', 'ترتيل هادئ - عبد الباسط عبد الصمد')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
+          <div>
+            <p class="text-xs font-extrabold text-white">📖 ترتيل هادئ - الشيخ عبد الباسط عبد الصمد</p>
+            <p class="text-[10px] text-indigo-300">نبرة مباركة للتركيز</p>
+          </div>
+          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+        </div>
+
+        <!-- أصوات الطبيعة والمطر -->
+        <div onclick="playAudio('https://cdn.pixabay.com/download/audio/2021/08/09/audio_193988cb62.mp3?filename=rain-and-thunder-nature-sounds-7575.mp3', 'أصوات المطر الهادئ')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
+          <div>
+            <p class="text-xs font-extrabold text-white">🌧️ أصوات المطر الهادئ</p>
+            <p class="text-[10px] text-indigo-300">استرخاء وعزل للضوضاء</p>
+          </div>
+          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+        </div>
+
+        <div onclick="playAudio('https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32c84278.mp3?filename=gentle-ocean-waves-111162.mp3', 'أمواج البحر الناعمة')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
+          <div>
+            <p class="text-xs font-extrabold text-white">🌊 أمواج البحر الناعمة</p>
+            <p class="text-[10px] text-indigo-300">راحة نفسية عميقة</p>
+          </div>
+          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+        </div>
+
+      </div>
+
+      <div class="pt-3 border-t border-white/10 flex justify-between items-center">
+        <span id="nowPlayingText" class="text-xs text-indigo-200 font-bold">الحالة: متوقف</span>
+        <button onclick="stopAudio()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow">إيقاف الصوت ⏹️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة منبثقة عامة -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="glass-card max-w-md w-full p-6 space-y-4 border border-white/20">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <h3 id="modalTitle" class="font-extrabold text-base text-white">إضافة عنصر</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
       </div>
       <div id="modalBody" class="space-y-3"></div>
     </div>
   </div>
 
-  <!-- عنصر مشغل الصوت الخلفي الخفي -->
-  <audio id="ambientAudioElement" loop class="hidden"></audio>
+  <!-- عنصر الصوت الخلفي الخفي -->
+  <audio id="globalAudio" loop class="hidden"></audio>
 
   <script>
-    // البيانات الافتراضية للمنصة (بدون ذكاء اصطناعي)
     const defaultData = {
-      siteTitle: "منصة الدراسة الذكية",
-      currentBg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80",
+      siteTitle: "تطبيق مجرتي",
+      currentBg: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80",
       ministerial: [
-        { id: 1, subject: "الفيزياء", year: "2023 دور أول", q: "ما الفائدة العملية من وجود المادة العازلة بين صفيحتي المتسعة؟", a: "1. زيادة سعة المتسعة حسب العلاقة Ck = k.C\n2. منع الانهيار الكهربائي المبكر للعازل بين الصفيحتين عند تسليط فرق جهد كبير." },
-        { id: 2, subject: "الكيمياء", year: "2022 تمهيدي", q: "علل: ترتفع درجة حرارة التفاعل الباعث للحرارة عند إجرائه في إناء معزول؟", a: "لأن التفاعل يحرر طاقة حرارية إلى المحيط، وبما أن الإناء معزول فلا تتسرب الحرارة للخارج فتؤدي لرفع درجة حرارة النظام." }
+        { id: 1, subject: "الفيزياء", year: "2023 دور أول", q: "ما الفائدة العملية من وجود المادة العازلة بين صفيحتي المتسعة؟", a: "1. زيادة سعة المتسعة حسب العلاقة Ck = k.C\n2. منع الانهيار الكهربائي المبكر للعازل." }
       ],
       exams: [
-        { id: 1, q: "وحدة قياس السعة الكهربائية في النظام الدولي هي:", options: ["الأمبير", "الفاراد", "الأوم", "الفولت"], correct: 1 },
-        { id: 2, q: "إذا ضوعف فرق الجهد بين صفيحتي متسعة ذات سعة ثابتة فإن الشحنة المختزنة:", options: ["تقل للنصف", "تبقى ثابتة", "تتضاعف", "تصبح صفراً"], correct: 2 }
+        { id: 1, q: "وحدة قياس السعة الكهربائية هي:", options: ["الأمبير", "الفاراد", "الأوم", "الفولت"], correct: 1 }
       ],
       schedule: [
-        { id: 1, day: "السبت", subject: "الفيزياء", time: "4:00 - 6:00 مساءً", note: "الفصل الأول - المتسعات" },
-        { id: 2, day: "الأحد", subject: "الرياضيات", time: "4:00 - 6:00 مساءً", note: "الأعداد المركبة" }
+        { id: 1, day: "السبت", subject: "الفيزياء", time: "4:00 - 6:00 مساءً", note: "الفصل الأول" }
       ],
       tasks: [
-        { id: 1, text: "مراجعة وتلاوة ورد اليوم من القرآن", done: false },
+        { id: 1, text: "مراجعة ورد اليوم من القرآن الكريم", done: false },
         { id: 2, text: "حل مسائل الفصل الأول فيزياء", done: true }
       ],
       pdfs: [
-        { id: 1, title: "ملخص قوانين الفيزياء الشامل", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" }
+        { id: 1, title: "ملخص قوانين الفيزياء", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" }
       ]
     };
 
-    let appData = JSON.parse(localStorage.getItem('studyPlatformDataClean')) || defaultData;
+    let appData = JSON.parse(localStorage.getItem('studyPlatformMagrati')) || defaultData;
     let editMode = false;
 
     function saveData() {
-      localStorage.setItem('studyPlatformDataClean', JSON.stringify(appData));
+      localStorage.setItem('studyPlatformMagrati', JSON.stringify(appData));
     }
 
-    // تغيير الخلفية الطبيعية
+    // إدارة الخلفيات
     function changeBackground(url) {
       appData.currentBg = url;
       saveData();
       applyBackground();
+      closeBgModal();
     }
 
     function applyBackground() {
       const bg = appData.currentBg || defaultData.currentBg;
-      document.getElementById('pageBody').style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('${bg}')`;
-      const selector = document.getElementById('bgSelector');
-      if (selector) selector.value = bg;
+      document.getElementById('pageBody').style.backgroundImage = `linear-gradient(rgba(5, 10, 25, 0.5), rgba(5, 10, 25, 0.7)), url('${bg}')`;
     }
 
-    // إدارة نظام الأصوات (قرآن ومطر)
-    let isAudioPlaying = false;
-    const audioUrls = {
-      quran_mishary: "https://server8.mp3quran.net/afs/002.mp3", // سورة البقرة - العفاسي
-      quran_sudais: "https://server11.mp3quran.net/sds/001.mp3",  // الفاتحة والبقرة - السديس
-      quran_basit: "https://server7.mp3quran.net/abdulsamad/001.mp3", // عبد الباسط
-      quran_ghamdi: "https://server6.mp3quran.net/gmd/001.mp3", // سعد الغامدي
-      rain: "https://cdn.pixabay.com/download/audio/2021/08/09/audio_193988cb62.mp3?filename=rain-and-thunder-nature-sounds-7575.mp3",
-      waves: "https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32c84278.mp3?filename=gentle-ocean-waves-111162.mp3",
-      forest: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c3479a9e.mp3?filename=forest-birds-ambience-10815.mp3"
-    };
+    function openBgModal() { document.getElementById('bgModal').classList.remove('hidden'); document.getElementById('bgModal').classList.add('flex'); }
+    function closeBgModal() { document.getElementById('bgModal').classList.add('hidden'); document.getElementById('bgModal').classList.remove('flex'); }
 
-    function changeAmbientSound(type) {
-      const audioEl = document.getElementById('ambientAudioElement');
-      if (type === 'none') {
-        audioEl.pause();
-        isAudioPlaying = false;
-        document.getElementById('audioToggleBtn').textContent = "تشغيل الصوت 🔊";
-        document.getElementById('audioStatus').textContent = "متوقف";
-        return;
-      }
-      if (audioUrls[type]) {
-        audioEl.src = audioUrls[type];
-        if (isAudioPlaying) {
-          audioEl.play().catch(e => console.log(e));
-          document.getElementById('audioStatus').textContent = "قيد التشغيل 🎶";
-        }
-      }
+    // إدارة الأصوات
+    function openAudioModal() { document.getElementById('audioModal').classList.remove('hidden'); document.getElementById('audioModal').classList.add('flex'); }
+    function closeAudioModal() { document.getElementById('audioModal').classList.add('hidden'); document.getElementById('audioModal').classList.remove('flex'); }
+
+    function playAudio(url, name) {
+      const audio = document.getElementById('globalAudio');
+      audio.src = url;
+      audio.play().then(() => {
+        document.getElementById('nowPlayingText').textContent = "قيد التشغيل: " + name;
+      }).catch(err => alert("تعذر تشغيل الصوت، حاول مرة أخرى."));
     }
 
-    function toggleAmbientAudio() {
-      const audioEl = document.getElementById('ambientAudioElement');
-      const select = document.getElementById('soundType');
-      const btn = document.getElementById('audioToggleBtn');
-      const status = document.getElementById('audioStatus');
-
-      if (select.value === 'none') {
-        alert("يرجى اختيار نوع الصوت أو التلاوة أولاً من القائمة.");
-        return;
-      }
-
-      if (isAudioPlaying) {
-        audioEl.pause();
-        isAudioPlaying = false;
-        btn.textContent = "تشغيل الصوت 🔊";
-        status.textContent = "متوقف";
-      } else {
-        if (!audioEl.src) {
-          audioEl.src = audioUrls[select.value];
-        }
-        audioEl.play().then(() => {
-          isAudioPlaying = true;
-          btn.textContent = "إيقاف الصوت 🔇";
-          status.textContent = "قيد التشغيل 🎶";
-        }).catch(err => {
-          alert("تعذر تشغيل الصوت تلقائياً، حاول مرة أخرى.");
-        });
-      }
+    function stopAudio() {
+      const audio = document.getElementById('globalAudio');
+      audio.pause();
+      document.getElementById('nowPlayingText').textContent = "الحالة: متوقف";
     }
 
-    // التنقل بين التبويبات
+    // التنقل
     function switchTab(tabId) {
       document.querySelectorAll('.section-panel').forEach(el => el.classList.add('hidden'));
       document.getElementById('sec-' + tabId).classList.remove('hidden');
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('tab-active');
-        btn.classList.add('text-slate-700', 'bg-white/70');
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-white/10', 'text-white');
       });
-      const activeBtn = document.getElementById('tab-' + tabId);
-      activeBtn.classList.add('tab-active');
-      activeBtn.classList.remove('text-slate-700', 'bg-white/70');
+      event.currentTarget.classList.add('bg-indigo-600', 'text-white');
+      event.currentTarget.classList.remove('bg-white/10');
     }
 
     // وضع التعديل
     function toggleEditMode() {
       editMode = !editMode;
-      document.getElementById('editModeText').textContent = editMode ? "وضع التعديل: مفعل" : "وضع التعديل: مغلق";
-      document.getElementById('editModeBtn').classList.toggle('bg-amber-100', editMode);
+      document.getElementById('editModeBtn').classList.toggle('bg-amber-500/40', editMode);
       document.querySelectorAll('.edit-only').forEach(el => el.classList.toggle('hidden', !editMode));
       renderAll();
     }
@@ -381,212 +374,26 @@
           updateTimerDisplay();
         } else {
           pauseTimer();
-          alert("انتهى وقت التركيز! استرح قليلاً يا بطل.");
+          alert("انتهى وقت التركيز! أحسنت يا بطل.");
         }
       }, 1000);
     }
 
-    function pauseTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
+    function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
+    function resetTimer() { pauseTimer(); timerSeconds = 25 * 60; updateTimerDisplay(); }
 
-    function resetTimer() {
-      pauseTimer();
-      timerSeconds = 25 * 60;
-      updateTimerDisplay();
-    }
-
-    // الأسئلة الوزارية
-    function renderMinisterial() {
-      const search = document.getElementById('minSearch').value.toLowerCase();
-      const subj = document.getElementById('minFilterSubject').value;
-      const list = document.getElementById('ministerialList');
-
-      const filtered = appData.ministerial.filter(item =>
-        (subj === 'all' || item.subject === subj) &&
-        (item.q.toLowerCase().includes(search) || item.a.toLowerCase().includes(search))
-      );
-
-      list.innerHTML = filtered.map(item => `
-        <div class="card p-4 space-y-2.5 shadow-sm">
-          <div class="flex justify-between items-center">
-            <span class="px-2.5 py-1 bg-teal-50 text-teal-800 rounded-lg text-xs font-bold">${item.subject} • ${item.year}</span>
-            ${editMode ? `<button onclick="deleteMinisterial(${item.id})" class="text-xs text-rose-600 font-bold">حذف ✕</button>` : ''}
-          </div>
-          <p class="font-bold text-sm text-slate-900">س: ${item.q}</p>
-          <details class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <summary class="text-xs font-bold text-emerald-700 cursor-pointer">عرض الجواب النموذجي</summary>
-            <p class="text-xs text-slate-700 mt-2 whitespace-pre-wrap leading-relaxed">${item.a}</p>
-          </details>
-        </div>
-      `).join('');
-    }
-
-    function deleteMinisterial(id) {
-      appData.ministerial = appData.ministerial.filter(x => x.id !== id);
-      saveData();
-      renderMinisterial();
-    }
-
-    function openAddQuestionModal() {
-      document.getElementById('modalTitle').textContent = "إضافة سؤال وزاري جديد";
-      document.getElementById('modalBody').innerHTML = `
-        <input id="mSubj" placeholder="المادة (مثلاً: الفيزياء)" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="mYear" placeholder="السنة والدور (مثلاً: 2024 دور أول)" class="w-full p-2.5 border rounded-xl text-sm">
-        <textarea id="mQ" placeholder="نص السؤال..." rows="2" class="w-full p-2.5 border rounded-xl text-sm"></textarea>
-        <textarea id="mA" placeholder="الجواب النموذجي..." rows="3" class="w-full p-2.5 border rounded-xl text-sm"></textarea>
-        <button onclick="saveNewMinisterial()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
-      `;
-      showModal();
-    }
-
-    function saveNewMinisterial() {
-      const subject = document.getElementById('mSubj').value.trim() || 'عام';
-      const year = document.getElementById('mYear').value.trim() || 'وزاري';
-      const q = document.getElementById('mQ').value.trim();
-      const a = document.getElementById('mA').value.trim();
-      if (!q || !a) return;
-      appData.ministerial.unshift({ id: Date.now(), subject, year, q, a });
-      saveData();
-      renderMinisterial();
-      closeModal();
-    }
-
-    // الامتحانات
-    function renderExams() {
-      const container = document.getElementById('examContainer');
-      if (!appData.exams.length) {
-        container.innerHTML = '<p class="text-sm text-slate-500">لا توجد أسئلة امتحان حالياً.</p>';
-        return;
-      }
-      container.innerHTML = appData.exams.map((ex, idx) => `
-        <div class="border-b border-slate-100 pb-4 space-y-2">
-          <div class="flex justify-between">
-            <p class="font-bold text-sm text-slate-900">${idx + 1}. ${ex.q}</p>
-            ${editMode ? `<button onclick="deleteExam(${ex.id})" class="text-xs text-rose-600 font-bold">حذف</button>` : ''}
-          </div>
-          <div class="grid sm:grid-cols-2 gap-2">
-            ${ex.options.map((opt, oIdx) => `
-              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-bold">
-                <input type="radio" name="exam_${ex.id}" value="${oIdx}">
-                <span>${opt}</span>
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `).join('') + `
-        <button onclick="gradeExam()" class="px-6 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl shadow-sm">تصحيح الامتحان وعرض النتيجة</button>
-        <div id="examResult" class="font-extrabold text-base"></div>
-      `;
-    }
-
-    function gradeExam() {
-      let score = 0;
-      appData.exams.forEach(ex => {
-        const selected = document.querySelector(`input[name="exam_${ex.id}"]:checked`);
-        if (selected && parseInt(selected.value) === ex.correct) score++;
-      });
-      const res = document.getElementById('examResult');
-      res.textContent = `نتيجتك: ${score} من ${appData.exams.length}`;
-      res.className = score === appData.exams.length ? "font-extrabold text-base text-emerald-600" : "font-extrabold text-base text-teal-600";
-    }
-
-    function deleteExam(id) {
-      appData.exams = appData.exams.filter(x => x.id !== id);
-      saveData();
-      renderExams();
-    }
-
-    function openAddExamModal() {
-      document.getElementById('modalTitle').textContent = "إضافة سؤال امتحان";
-      document.getElementById('modalBody').innerHTML = `
-        <input id="eQ" placeholder="نص السؤال" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="eOpt0" placeholder="الخيار الأول" class="w-full p-2 border rounded-xl text-sm">
-        <input id="eOpt1" placeholder="الخيار الثاني" class="w-full p-2 border rounded-xl text-sm">
-        <input id="eOpt2" placeholder="الخيار الثالث" class="w-full p-2 border rounded-xl text-sm">
-        <input id="eOpt3" placeholder="الخيار الرابع" class="w-full p-2 border rounded-xl text-sm">
-        <select id="eCorrect" class="w-full p-2.5 border rounded-xl text-sm font-bold">
-          <option value="0">الإجابة الصحيحة: الخيار الأول</option>
-          <option value="1">الإجابة الصحيحة: الخيار الثاني</option>
-          <option value="2">الإجابة الصحيحة: الخيار الثالث</option>
-          <option value="3">الإجابة الصحيحة: الخيار الرابع</option>
-        </select>
-        <button onclick="saveNewExam()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ السؤال</button>
-      `;
-      showModal();
-    }
-
-    function saveNewExam() {
-      const q = document.getElementById('eQ').value.trim();
-      const options = [0,1,2,3].map(i => document.getElementById('eOpt' + i).value.trim());
-      const correct = parseInt(document.getElementById('eCorrect').value);
-      if (!q || options.some(o => !o)) return;
-      appData.exams.push({ id: Date.now(), q, options, correct });
-      saveData();
-      renderExams();
-      closeModal();
-    }
-
-    // الجدول الدراسي
-    function renderSchedule() {
-      const grid = document.getElementById('scheduleGrid');
-      grid.innerHTML = appData.schedule.map(s => `
-        <div class="card p-4 border-r-4 border-r-teal-600 space-y-1.5 shadow-sm">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-extrabold text-teal-700">${s.day}</span>
-            ${editMode ? `<button onclick="deleteSchedule(${s.id})" class="text-xs text-rose-600 font-bold">✕</button>` : ''}
-          </div>
-          <h3 class="font-extrabold text-base text-slate-800">${s.subject}</h3>
-          <p class="text-xs text-slate-500">🕒 ${s.time}</p>
-          <p class="text-xs text-slate-700 bg-slate-50 p-2 rounded-lg">${s.note}</p>
-        </div>
-      `).join('');
-    }
-
-    function deleteSchedule(id) {
-      appData.schedule = appData.schedule.filter(x => x.id !== id);
-      saveData();
-      renderSchedule();
-    }
-
-    function openAddScheduleModal() {
-      document.getElementById('modalTitle').textContent = "إضافة حصة للجدول";
-      document.getElementById('modalBody').innerHTML = `
-        <input id="sDay" placeholder="اليوم (مثلاً: الثلاثاء)" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="sSubj" placeholder="المادة" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="sTime" placeholder="الوقت (مثلاً: 4:00 - 6:00 مساءً)" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="sNote" placeholder="الموضوع أو الملاحظة" class="w-full p-2.5 border rounded-xl text-sm">
-        <button onclick="saveNewSchedule()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">إضافة</button>
-      `;
-      showModal();
-    }
-
-    function saveNewSchedule() {
-      const day = document.getElementById('sDay').value.trim();
-      const subject = document.getElementById('sSubj').value.trim();
-      const time = document.getElementById('sTime').value.trim();
-      const note = document.getElementById('sNote').value.trim();
-      if (!day || !subject) return;
-      appData.schedule.push({ id: Date.now(), day, subject, time, note });
-      saveData();
-      renderSchedule();
-      closeModal();
-    }
-
-    // المهام
+    // المهام والوظائف الأساسية
     function renderTasks() {
       const list = document.getElementById('tasksList');
       list.innerHTML = appData.tasks.map(t => `
-        <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+        <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-white/10">
           <label class="flex items-center gap-2.5 cursor-pointer flex-1">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 accent-teal-600">
-            <span class="text-sm ${t.done ? 'line-through text-slate-400' : 'text-slate-800 font-semibold'}">${t.text}</span>
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 accent-indigo-600">
+            <span class="text-xs ${t.done ? 'line-through text-slate-400' : 'text-white font-semibold'}">${t.text}</span>
           </label>
-          <button onclick="deleteTask(${t.id})" class="text-xs text-rose-500 font-bold px-2">✕</button>
+          <button onclick="deleteTask(${t.id})" class="text-xs text-rose-400 font-bold px-2">✕</button>
         </li>
       `).join('');
-
       const doneCount = appData.tasks.filter(t => t.done).length;
       const pct = appData.tasks.length ? Math.round((doneCount / appData.tasks.length) * 100) : 0;
       document.getElementById('taskProgressText').textContent = pct + '%';
@@ -616,124 +423,54 @@
       renderTasks();
     }
 
-    // ملفات PDF
-    function renderPdfs() {
-      const grid = document.getElementById('pdfGrid');
-      grid.innerHTML = appData.pdfs.map(p => `
-        <div class="card p-4 flex flex-col justify-between gap-3 shadow-sm">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl">📄</span>
-              <h3 class="font-bold text-sm text-slate-800">${p.title}</h3>
-            </div>
-            ${editMode ? `<button onclick="deletePdf(${p.id})" class="text-xs text-rose-600 font-bold">✕</button>` : ''}
-          </div>
-          <a href="${p.url}" target="_blank" class="text-center py-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-bold text-xs rounded-xl transition">فتح وقراءة الملف</a>
+    function renderMinisterial() {
+      const list = document.getElementById('ministerialList');
+      list.innerHTML = appData.ministerial.map(item => `
+        <div class="glass-card p-4 space-y-2">
+          <span class="text-[10px] bg-indigo-900/80 text-indigo-200 px-2.5 py-1 rounded-lg">${item.subject} • ${item.year}</span>
+          <p class="font-bold text-xs text-white">س: ${item.q}</p>
+          <p class="text-[11px] text-emerald-300">ج: ${item.a}</p>
         </div>
       `).join('');
     }
 
-    function handlePdfUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const blobUrl = URL.createObjectURL(file);
-      appData.pdfs.unshift({ id: Date.now(), title: file.name, url: blobUrl });
-      renderPdfs();
+    function renderExams() {
+      document.getElementById('examContainer').innerHTML = appData.exams.map((ex, idx) => `
+        <p class="font-bold text-xs text-white">${idx + 1}. ${ex.q}</p>
+      `).join('');
     }
 
-    function openAddLinkModal() {
-      document.getElementById('modalTitle').textContent = "إضافة رابط ملف PDF";
-      document.getElementById('modalBody').innerHTML = `
-        <input id="pTitle" placeholder="عنوان الملزمة" class="w-full p-2.5 border rounded-xl text-sm">
-        <input id="pUrl" placeholder="رابط الملف (https://...)" class="w-full p-2.5 border rounded-xl text-sm" dir="ltr">
-        <button onclick="saveNewPdfLink()" class="w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-sm">حفظ الرابط</button>
-      `;
-      showModal();
+    function renderSchedule() {
+      document.getElementById('scheduleGrid').innerHTML = appData.schedule.map(s => `
+        <div class="glass-card p-4">
+          <p class="text-xs font-bold text-indigo-300">${s.day}</p>
+          <h3 class="font-bold text-sm text-white">${s.subject}</h3>
+          <p class="text-[11px] text-slate-300">${s.time}</p>
+        </div>
+      `).join('');
     }
 
-    function saveNewPdfLink() {
-      const title = document.getElementById('pTitle').value.trim();
-      const url = document.getElementById('pUrl').value.trim();
-      if (!title || !url) return;
-      appData.pdfs.unshift({ id: Date.now(), title, url });
-      saveData();
-      renderPdfs();
-      closeModal();
+    function renderPdfs() {
+      document.getElementById('pdfGrid').innerHTML = appData.pdfs.map(p => `
+        <div class="glass-card p-4 flex flex-col justify-between gap-2">
+          <p class="font-bold text-xs text-white">📄 ${p.title}</p>
+          <a href="${p.url}" target="_blank" class="text-center py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] rounded-xl">فتح وقراءة</a>
+        </div>
+      `).join('');
     }
 
-    function deletePdf(id) {
-      appData.pdfs = appData.pdfs.filter(x => x.id !== id);
-      saveData();
-      renderPdfs();
-    }
-
-    // الإدارة والنسخ الاحتياطي
-    function updateSiteTitle() {
-      const val = document.getElementById('customSiteTitleInput').value.trim();
-      if (!val) return;
-      appData.siteTitle = val;
-      document.getElementById('siteTitle').textContent = val;
-      saveData();
-    }
-
-    function exportData() {
-      const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'study-platform-clean-backup.json';
-      a.click();
-    }
-
-    function importData(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        try {
-          appData = JSON.parse(ev.target.result);
-          saveData();
-          renderAll();
-          alert("تم استيراد البيانات بنجاح!");
-        } catch {
-          alert("ملف غير صالح!");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetAllData() {
-      if (confirm("هل أنت متأكد من استعادة البيانات الافتراضية؟")) {
-        localStorage.removeItem('studyPlatformDataClean');
-        appData = JSON.parse(JSON.stringify(defaultData));
-        renderAll();
-      }
-    }
-
-    // النوافذ المنبثقة
-    function showModal() {
-      const m = document.getElementById('modalBackdrop');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-    }
-
-    function closeModal() {
-      const m = document.getElementById('modalBackdrop');
-      m.classList.add('hidden');
-      m.classList.remove('flex');
-    }
+    function closeModal() { document.getElementById('modalBackdrop').classList.add('hidden'); document.getElementById('modalBackdrop').classList.remove('flex'); }
 
     function renderAll() {
       document.getElementById('siteTitle').textContent = appData.siteTitle;
-      document.getElementById('customSiteTitleInput').value = appData.siteTitle;
       applyBackground();
+      renderTasks();
       renderMinisterial();
       renderExams();
       renderSchedule();
-      renderTasks();
       renderPdfs();
     }
 
-    // تشغيل التطبيق عند التحميل
     renderAll();
   </script>
 </body>
