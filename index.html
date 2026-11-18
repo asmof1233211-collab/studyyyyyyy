@@ -1,401 +1,846 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>منصة الدراسة الذكية - وضع التركيز</title>
+  <title>تطبيق مجرتي - منصة التركيز والجدول الدراسي</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Cairo', sans-serif; color: #fff; transition: background 0.8s ease; }
-    .glass-card { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(12px); border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-    .glass-nav { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 9999px; }
+    :root {
+      --accent-primary: #818cf8;
+      --accent-secondary: #38bdf8;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      color: #f8fafc;
+      transition: background-image 0.9s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* تصميم زجاجي عصري فائق النعومة */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-card {
+      background: rgba(30, 41, 59, 0.48);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(129, 140, 248, 0.4);
+      transform: translateY(-2px);
+      background: rgba(30, 41, 59, 0.62);
+    }
+
+    .glass-header {
+      background: rgba(9, 13, 26, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    /* حلقة المؤقت الدائرية SVG */
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.5s linear, stroke 0.4s ease;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* توهج المؤقت عند التشغيل */
+    .timer-glow {
+      box-shadow: 0 0 45px rgba(99, 102, 241, 0.28), inset 0 0 25px rgba(99, 102, 241, 0.15);
+    }
+
+    /* أوضاع العرض: أفقي (Landscape) و عمودي (Portrait) */
+    body.layout-portrait #mainWrapper {
+      max-width: 540px !important;
+    }
+    body.layout-portrait #focusGrid {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    body.layout-portrait #scheduleDaysGrid {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+
+    body.layout-landscape #mainWrapper {
+      max-width: 1280px !important;
+    }
+
+    /* شريط التمرير المخصص */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(129, 140, 248, 0.6);
+    }
+
+    /* موجة صوتية متحركة */
+    @keyframes soundWave {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    .wave-bar {
+      width: 3px;
+      background-color: #818cf8;
+      border-radius: 9999px;
+      animation: soundWave 0.9s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.1s; }
   </style>
 </head>
-<body id="pageBody" class="min-h-screen flex flex-col bg-cover bg-center relative" style="background-image: linear-gradient(rgba(5, 10, 25, 0.5), rgba(5, 10, 25, 0.7)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80');">
+<body id="pageBody" class="min-h-screen flex flex-col layout-landscape" style="background-image: linear-gradient(rgba(6, 10, 24, 0.55), rgba(6, 10, 24, 0.78)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80');">
 
-  <!-- الشريط العلوي العائم الشفاف (مطابق لتصميم التطبيق) -->
-  <header class="glass-nav sticky top-0 z-40 px-4 py-3">
-    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+  <!-- شريط الإشعارات العائم (بديل alert) -->
+  <div id="toastContainer" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-max max-w-[90vw]"></div>
+
+  <!-- الشريط العلوي -->
+  <header class="glass-header sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       
-      <!-- شعار المنصة واسمها -->
-      <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 rounded-2xl bg-indigo-600/80 border border-indigo-400 text-white flex items-center justify-center font-extrabold text-lg shadow-lg">🌙</div>
+      <!-- الشعار والعنوان -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 border border-indigo-300/40 text-white flex items-center justify-center text-xl shadow-lg shadow-indigo-500/30">
+          🌌
+        </div>
         <div>
-          <h1 id="siteTitle" class="font-extrabold text-base text-white tracking-wide">تطبيق مجرتي</h1>
-          <p class="text-[11px] text-indigo-200">خطوة هادئة... نحو حلمك</p>
+          <h1 class="font-extrabold text-base sm:text-lg text-white tracking-wide flex items-center gap-2">
+            تطبيق مجرتي
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">التركيز الذكي</span>
+          </h1>
+          <p class="text-[11px] text-slate-300">خطوة هادئة ومُنظّمة نحو التفوق</p>
         </div>
       </div>
 
-      <!-- أزرار التحكم العلوية العائمة (خلفيات، أصوات، تعديل) -->
-      <div class="flex items-center gap-2 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 shadow-inner">
-        <button onclick="openBgModal()" title="اختر عالمك (الخلفيات)" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm flex items-center gap-1">
-          <span>🎨</span>
+      <!-- أزرار التحكم السريعة (الاتجاه، الأصوات، الخلفيات، ملء الشاشة) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-900/70 p-1.5 rounded-2xl border border-white/10 shadow-inner">
+        
+        <!-- زر تبديل وضع الشاشة (أفقي / عمودي) -->
+        <button onclick="toggleOrientationLayout()" id="orientationBtn" title="تبديل وضع العرض (أفقي / عمودي)" class="px-3 py-2 rounded-xl hover:bg-white/10 text-white transition text-xs font-bold flex items-center gap-1.5 border border-transparent hover:border-white/15">
+          <span id="orientationIcon">📱</span>
+          <span id="orientationLabel" class="hidden sm:inline">وضع عمودي</span>
         </button>
-        <button onclick="openAudioModal()" title="أصوات الاسترخاء والقرآن" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm flex items-center gap-1">
+
+        <!-- زر الأصوات -->
+        <button onclick="openAudioModal()" id="headerAudioBtn" title="الأصوات والعود والقرآن" class="px-3 py-2 rounded-xl hover:bg-white/10 text-white transition text-xs font-bold flex items-center gap-1.5 relative">
           <span>🎵</span>
+          <span class="hidden sm:inline">الأصوات</span>
+          <span id="activeAudioDot" class="hidden w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
         </button>
-        <button onclick="toggleEditMode()" id="editModeBtn" title="وضع التعديل" class="p-2.5 rounded-xl hover:bg-white/10 text-white transition text-sm">
-          <span>⚙️</span>
+
+        <!-- زر الخلفيات -->
+        <button onclick="openBgModal()" title="اختر عالمك (الخلفيات)" class="px-3 py-2 rounded-xl hover:bg-white/10 text-white transition text-xs font-bold flex items-center gap-1.5">
+          <span>🎨</span>
+          <span class="hidden sm:inline">الخلفيات</span>
+        </button>
+
+        <!-- زر ملء الشاشة -->
+        <button onclick="toggleFullScreen()" title="وضع ملء الشاشة" class="p-2 rounded-xl hover:bg-white/10 text-slate-200 transition text-sm">
+          ⛶
         </button>
       </div>
     </div>
 
-    <!-- شريط التنقل السريع بين الأقسام -->
-    <nav class="max-w-6xl mx-auto pt-2.5 flex gap-2 overflow-x-auto pb-1">
-      <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md transition whitespace-nowrap">⏱️ جو التركيز</button>
-      <button onclick="switchTab('ministerial')" id="tab-ministerial" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📚 الأسئلة الوزارية</button>
-      <button onclick="switchTab('exams')" id="tab-exams" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📝 الامتحانات</button>
-      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📅 الجدول</button>
-      <button onclick="switchTab('pdfs')" id="tab-pdfs" class="tab-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition whitespace-nowrap">📂 الملازم PDF</button>
-    </nav>
+    <!-- أزرار التنقل بين القسمين الرئيسيين فقط (بومودورو + الجدول الدراسي) -->
+    <div class="max-w-7xl mx-auto pt-3 flex items-center justify-center sm:justify-start gap-2.5">
+      <button onclick="switchTab('focus')" id="tab-focus" class="tab-btn px-5 py-2 rounded-2xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+        <span>⏱️</span> مؤقت البومودورو والمهام
+      </button>
+      <button onclick="switchTab('schedule')" id="tab-schedule" class="tab-btn px-5 py-2 rounded-2xl text-xs sm:text-sm font-extrabold bg-white/10 text-slate-200 hover:bg-white/20 transition flex items-center gap-2">
+        <span>📅</span> الجدول الدراسي الأسبوعي
+      </button>
+    </div>
   </header>
 
-  <!-- المحتوى الرئيسي -->
-  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 space-y-6">
+  <!-- شريط مصغر للصوت قيد التشغيل (يظهر عند تشغيل أي صوت) -->
+  <div id="miniAudioPlayer" class="hidden max-w-7xl w-[94%] mx-auto mt-3 glass-panel px-4 py-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-3 border border-indigo-400/30">
+    <div class="flex items-center gap-3">
+      <div class="flex items-end gap-1 h-4 px-1">
+        <span class="wave-bar"></span>
+        <span class="wave-bar"></span>
+        <span class="wave-bar"></span>
+        <span class="wave-bar"></span>
+      </div>
+      <div>
+        <p id="miniAudioTitle" class="text-xs font-extrabold text-white">جاري التشغيل...</p>
+        <p id="miniAudioSubtitle" class="text-[10px] text-indigo-300">صوت هادئ للتركيز</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5">
+        <span class="text-xs">🔉</span>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" oninput="setGlobalVolume(this.value)" class="w-20 sm:w-28 accent-indigo-500 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
+      </div>
+      <button onclick="stopAllAudio()" class="px-3 py-1 bg-rose-500/80 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition">إيقاف ⏹️</button>
+    </div>
+  </div>
 
-    <!-- 1. قسم المؤقت والتركيز (مطابق تماماً لصورة التطبيق) -->
-    <section id="sec-timer" class="section-panel grid md:grid-cols-12 gap-6 items-center">
+  <!-- الحاوية الرئيسية القابلة للتبديل بين الأفقي والعمودي -->
+  <main id="mainWrapper" class="flex-1 w-full mx-auto px-4 py-6 transition-all duration-500">
+
+    <!-- =========================================================
+         القسم الأول: مؤقت البومودورو العصري + مهام اليوم
+    ========================================================== -->
+    <section id="sec-focus" class="section-panel space-y-6">
       
-      <!-- رسالة التحفيز العلوية العائمة -->
-      <div class="md:col-span-12 flex justify-center">
-        <div class="bg-slate-900/60 backdrop-blur-md px-5 py-2 rounded-full border border-white/10 flex items-center gap-2 shadow-lg">
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-          <span id="currentStatusBadge" class="text-xs font-bold tracking-wide text-amber-200">مراجعة هادئة</span>
+      <!-- شريط الحالة التحفيزي -->
+      <div class="flex justify-center">
+        <div class="glass-panel px-5 py-2 rounded-full flex items-center gap-2.5">
+          <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse"></span>
+          <span id="statusText" class="text-xs font-bold text-indigo-100">جاهز لجلسة تركيز عميقة</span>
         </div>
       </div>
 
-      <!-- يسار الشاشة: مؤقت البومودورو الدائري الأنيق -->
-      <div class="md:col-span-5 flex flex-col items-center justify-center glass-card p-6 space-y-4">
-        <div class="flex gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-white/10">
-          <button onclick="setTimerMinutes(25)" class="px-3 py-1 text-xs font-bold rounded-lg bg-indigo-600/80 text-white shadow">25 د</button>
-          <button onclick="setTimerMinutes(50)" class="px-3 py-1 text-xs font-bold rounded-lg hover:bg-white/10 text-indigo-200">50 د</button>
-          <button onclick="setTimerMinutes(5)" class="px-3 py-1 text-xs font-bold rounded-lg hover:bg-white/10 text-emerald-300">5 د استراحة</button>
+      <div id="focusGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- بطاقة المؤقت الدائري العصري (5 أعمدة في الأفقي) -->
+        <div class="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between space-y-6">
+          
+          <!-- أزرار المدد الجاهزة + تخصيص أي وقت -->
+          <div class="w-full space-y-3">
+            <div class="flex items-center justify-center gap-2 bg-slate-950/50 p-1.5 rounded-2xl border border-white/10">
+              <button onclick="selectPreset(25, 'جلسة بومودورو (25 د)', 'focus')" id="preset-25" class="preset-btn flex-1 py-1.5 text-xs font-extrabold rounded-xl bg-indigo-600 text-white shadow transition">25 د</button>
+              <button onclick="selectPreset(50, 'جلسة عميقة (50 د)', 'focus')" id="preset-50" class="preset-btn flex-1 py-1.5 text-xs font-extrabold rounded-xl text-slate-300 hover:bg-white/10 transition">50 د</button>
+              <button onclick="selectPreset(15, 'مراجعة سريعة (15 د)', 'focus')" id="preset-15" class="preset-btn flex-1 py-1.5 text-xs font-extrabold rounded-xl text-slate-300 hover:bg-white/10 transition">15 د</button>
+              <button onclick="selectPreset(5, 'استراحة قصيرة (5 د)', 'break')" id="preset-5" class="preset-btn flex-1 py-1.5 text-xs font-extrabold rounded-xl text-emerald-300 hover:bg-white/10 transition">5 د راحة</button>
+            </div>
+
+            <!-- حقل إدخال أي وقت مخصص بالدقائق -->
+            <form onsubmit="applyCustomTime(event)" class="flex items-center gap-2 bg-slate-950/40 p-1.5 rounded-2xl border border-white/10">
+              <input type="number" id="customMinutesInput" min="1" max="300" placeholder="اكتب أي مدة بالدقائق (مثلاً 40)..." class="flex-1 bg-transparent px-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none font-bold">
+              <button type="submit" class="px-3.5 py-1.5 bg-sky-500/80 hover:bg-sky-500 text-white text-xs font-extrabold rounded-xl transition shadow">تعيين الوقت</button>
+            </form>
+          </div>
+
+          <!-- حلقة المؤقت الدائرية التفاعلية SVG -->
+          <div id="timerCircleWrapper" class="relative w-60 h-60 sm:w-64 sm:h-64 flex items-center justify-center rounded-full bg-slate-950/45 border border-white/10 transition-all duration-500">
+            <svg class="w-full h-full" viewBox="0 0 220 220">
+              <defs>
+                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#818cf8" />
+                  <stop offset="50%" stop-color="#38bdf8" />
+                  <stop offset="100%" stop-color="#c084fc" />
+                </linearGradient>
+                <linearGradient id="breakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#34d399" />
+                  <stop offset="100%" stop-color="#2dd4bf" />
+                </linearGradient>
+              </defs>
+              <!-- الحلقة الخلفية -->
+              <circle cx="110" cy="110" r="96" stroke="rgba(255,255,255,0.08)" stroke-width="10" fill="transparent" />
+              <!-- حلقة التقدم المتحركة -->
+              <circle id="progressRing" class="progress-ring-circle" cx="110" cy="110" r="96" stroke="url(#timerGradient)" stroke-width="10" stroke-linecap="round" fill="transparent" stroke-dasharray="603.19" stroke-dashoffset="0" />
+            </svg>
+
+            <!-- الرقم داخل الدائرة -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+              <span id="timerModeBadge" class="text-[11px] font-bold text-indigo-300 bg-indigo-500/15 px-3 py-0.5 rounded-full border border-indigo-400/20 mb-2">وضع الدراسة</span>
+              <div id="timerDisplay" class="text-5xl sm:text-6xl font-black text-white tracking-wider drop-shadow-lg tabular-nums" dir="ltr">25:00</div>
+              <span id="timerSubLabel" class="text-[11px] text-slate-400 mt-2 font-semibold">المدة الكلية: 25 دقيقة</span>
+            </div>
+          </div>
+
+          <!-- أزرار التحكم بالمؤقت -->
+          <div class="w-full grid grid-cols-3 gap-2.5">
+            <button onclick="startTimer()" id="startBtn" class="col-span-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-1.5">
+              <span>▶</span> ابدأ
+            </button>
+            <button onclick="pauseTimer()" class="col-span-1 py-3 bg-amber-500/85 hover:bg-amber-500 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-lg transition flex items-center justify-center gap-1.5">
+              <span>⏸</span> إيقاف
+            </button>
+            <button onclick="resetTimer()" class="col-span-1 py-3 bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-extrabold text-xs sm:text-sm rounded-2xl border border-white/10 transition flex items-center justify-center gap-1.5">
+              <span>↺</span> إعادة
+            </button>
+          </div>
         </div>
 
-        <!-- دائرة المؤقت -->
-        <div class="w-48 h-48 rounded-full border-4 border-indigo-500/40 flex flex-col items-center justify-center bg-slate-950/40 shadow-inner relative">
-          <span class="text-xs text-indigo-300 font-bold mb-1">وقت الدراسة</span>
-          <div id="timerDisplay" class="text-4xl font-extrabold text-white tracking-widest drop-shadow" dir="ltr">25:00</div>
-          <span class="text-[10px] text-slate-400 mt-1">الوضع المتبقي</span>
+        <!-- بطاقة مهام الجلسة والملخص السريع (7 أعمدة في الأفقي) -->
+        <div class="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-5">
+          <div class="space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 class="font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
+                  <span>✨</span> أهداف جلسة الدراسة اليوم
+                </h2>
+                <p class="text-xs text-slate-300">اكتب ما تريد إنجازه خلال مؤقت البومودورو</p>
+              </div>
+              <div class="flex items-center gap-2 bg-slate-950/60 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                <span class="text-[11px] text-slate-300">الإنجاز:</span>
+                <span id="taskProgressText" class="text-xs font-black text-indigo-300">0%</span>
+              </div>
+            </div>
+
+            <!-- شريط التقدم -->
+            <div class="w-full bg-slate-950/70 h-2.5 rounded-full overflow-hidden border border-white/10 p-0.5">
+              <div id="taskProgressBar" class="bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <!-- إضافة مهمة -->
+            <form onsubmit="addTask(event)" class="flex gap-2">
+              <input type="text" id="newTaskInput" placeholder="أضف هدفاً دراسياً (مثلاً: إنهاء الفصل الثاني رياضيات)..." class="flex-1 px-4 py-3 rounded-2xl border border-white/15 bg-slate-950/60 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400 transition" required>
+              <button type="submit" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-lg transition whitespace-nowrap">+ إضافة</button>
+            </form>
+
+            <!-- قائمة المهام -->
+            <ul id="tasksList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></ul>
+          </div>
+
+          <!-- إحصائية سريعة لوقت الدراسة المنجز -->
+          <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-slate-300">
+              <span class="text-base">🏆</span>
+              <span>إجمالي دقائق التركيز المنجزة اليوم:</span>
+              <strong id="completedMinutesBadge" class="text-emerald-300 font-black text-sm">0 دقيقة</strong>
+            </div>
+            <button onclick="switchTab('schedule')" class="text-indigo-300 hover:text-indigo-200 font-bold underline underline-offset-4">
+              عرض الجدول الأسبوعي ←
+            </button>
+          </div>
         </div>
 
-        <div class="flex gap-2 w-full">
-          <button onclick="startTimer()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition">ابدأ</button>
-          <button onclick="pauseTimer()" class="px-4 py-2.5 bg-amber-600/80 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-lg transition">إيقاف</button>
-          <button onclick="resetTimer()" class="px-4 py-2.5 bg-slate-700/80 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">إعادة</button>
-        </div>
       </div>
-
-      <!-- يمين الشاشة: المهام اليومية في جو هادئ -->
-      <div class="md:col-span-7 glass-card p-6 space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="font-extrabold text-sm text-white flex items-center gap-2"><span>✨</span> مهامي الدراسية اليوم</h2>
-          <span id="taskProgressText" class="text-xs font-bold text-indigo-300 bg-indigo-950/60 px-3 py-1 rounded-xl border border-indigo-500/30">0%</span>
-        </div>
-        <div class="w-full bg-slate-900/80 h-2 rounded-full overflow-hidden border border-white/10">
-          <div id="taskProgressBar" class="bg-indigo-500 h-full transition-all duration-300" style="width: 0%"></div>
-        </div>
-        <form onsubmit="addTask(event)" class="flex gap-2">
-          <input type="text" id="newTaskInput" placeholder="أضف مهمة جديدة (مثلاً: حفظ صفحتين من سورة البقرة)..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-white/15 bg-slate-900/70 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-inner" required>
-          <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition">إضافة</button>
-        </form>
-        <ul id="tasksList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></ul>
-      </div>
-
     </section>
 
-    <!-- 2. قسم الأسئلة الوزارية -->
-    <section id="sec-ministerial" class="section-panel hidden space-y-4">
-      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex flex-wrap gap-2 flex-1">
-          <input type="text" id="minSearch" oninput="renderMinisterial()" placeholder="ابحث في الأسئلة الوزارية..." class="px-3.5 py-2 rounded-xl border border-white/15 bg-slate-900/70 text-xs text-white placeholder-slate-400 flex-1 min-w-[200px]">
-          <select id="minFilterSubject" onchange="renderMinisterial()" class="px-3.5 py-2 rounded-xl border border-white/15 bg-slate-900 text-xs text-white font-bold">
-            <option value="all">كل المواد</option>
-            <option value="الفيزياء">الفيزياء</option>
-            <option value="الرياضيات">الرياضيات</option>
-            <option value="الكيمياء">الكيمياء</option>
-            <option value="الأحياء">الأحياء</option>
+    <!-- =========================================================
+         القسم الثاني: الجدول الدراسي الأسبوعي التفاعلي
+    ========================================================== -->
+    <section id="sec-schedule" class="section-panel hidden space-y-5">
+      
+      <!-- شريط التحكم بالجدول -->
+      <div class="glass-panel rounded-3xl p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
+            <span>📅</span> الجدول الدراسي الأسبوعي الذكي
+          </h2>
+          <p class="text-xs text-slate-300 mt-0.5">نظم موادك وأوقات دراستك لكل يوم من أيام الأسبوع</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="dayFilterSelect" onchange="renderSchedule()" class="px-3.5 py-2.5 rounded-2xl bg-slate-950/70 border border-white/15 text-xs font-bold text-white focus:outline-none">
+            <option value="all">عرض كل أيام الأسبوع</option>
+            <option value="السبت">السبت</option>
+            <option value="الأحد">الأحد</option>
+            <option value="الإثنين">الإثنين</option>
+            <option value="الثلاثاء">الثلاثاء</option>
+            <option value="الأربعاء">الأربعاء</option>
+            <option value="الخميس">الخميس</option>
+            <option value="الجمعة">الجمعة</option>
           </select>
+          <button onclick="openScheduleModal()" class="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-extrabold rounded-2xl shadow-lg shadow-emerald-600/25 transition flex items-center gap-1.5">
+            <span>+</span> إضافة مادة للجدول
+          </button>
         </div>
-        <button onclick="openAddQuestionModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة سؤال وزاري</button>
       </div>
-      <div id="ministerialList" class="grid md:grid-cols-2 gap-4"></div>
-    </section>
 
-    <!-- 3. قسم الامتحانات -->
-    <section id="sec-exams" class="section-panel hidden space-y-4">
-      <div class="glass-card p-4 flex items-center justify-between">
-        <div>
-          <h2 class="font-extrabold text-sm text-white">الاختبارات التفاعلية</h2>
-          <p class="text-[11px] text-slate-300">اختبر نفسك مع تصحيح فوري</p>
-        </div>
-        <button onclick="openAddExamModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة امتحان</button>
-      </div>
-      <div id="examContainer" class="glass-card p-6 space-y-5"></div>
-    </section>
+      <!-- شبكة الأيام الدراسية -->
+      <div id="scheduleDaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
 
-    <!-- 4. قسم الجدول الدراسي -->
-    <section id="sec-schedule" class="section-panel hidden space-y-4">
-      <div class="glass-card p-4 flex items-center justify-between">
-        <h2 class="font-extrabold text-sm text-white">الجدول الدراسي الأسبوعي</h2>
-        <button onclick="openAddScheduleModal()" class="edit-only hidden px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ إضافة حصة</button>
-      </div>
-      <div id="scheduleGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
-    </section>
-
-    <!-- 5. قسم الملازم و PDF -->
-    <section id="sec-pdfs" class="section-panel hidden space-y-4">
-      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="font-extrabold text-sm text-white">📂 مكتبة الملازم والملفات (PDF)</h2>
-        </div>
-        <div class="flex gap-2">
-          <label class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl cursor-pointer shadow transition">
-            + رفع ملف PDF
-            <input type="file" accept="application/pdf" onchange="handlePdfUpload(event)" class="hidden">
-          </label>
-        </div>
-      </div>
-      <div id="pdfGrid" class="grid md:grid-cols-3 gap-4"></div>
     </section>
 
   </main>
 
-  <!-- نافذة اختيار الخلفيات (مطابقة لصورة "اختر عالمك") -->
-  <div id="bgModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-    <div class="glass-card max-w-xl w-full p-6 space-y-4 border border-white/20">
-      <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <h3 class="font-extrabold text-base text-white">🌌 اختر عالمك (خلفيات هادئة ومريحة)</h3>
-        <button onclick="closeBgModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
-      </div>
-      <div class="grid grid-cols-2 gap-3 max-h-80 overflow-y-auto p-1">
-        <div onclick="changeBackground('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
-          <p class="p-2 text-xs font-bold text-center text-white">شاطئ هادئ</p>
-        </div>
-        <div onclick="changeBackground('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
-          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
-          <p class="p-2 text-xs font-bold text-center text-white">ليلة هادئة ونجوم</p>
-        </div>
-        <div onclick="changeBackground('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
-          <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
-          <p class="p-2 text-xs font-bold text-center text-white">غابة خضراء مريحة</p>
-        </div>
-        <div onclick="changeBackground('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-xl overflow-hidden border-2 border-indigo-500/50 hover:border-indigo-400 transition bg-slate-900">
-          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80" class="h-28 w-full object-cover">
-          <p class="p-2 text-xs font-bold text-center text-white">جو ممطر منعش</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- نافذة الأصوات والقرآن (مطابقة تماماً لصورة قائمة الأصوات) -->
+  <!-- =========================================================
+       نافذة الأصوات (عود شرقي + طبيعة مولدة برمجياً + قرآن كريم)
+  ========================================================== -->
   <div id="audioModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-    <div class="glass-card max-w-lg w-full p-6 space-y-4 border border-white/20">
+    <div class="glass-panel max-w-xl w-full rounded-3xl p-6 space-y-4 border border-white/20 max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <h3 class="font-extrabold text-base text-white">🎧 أصوات المنصة (قرآن كريم وأصوات طبيعية)</h3>
-        <button onclick="closeAudioModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+        <div>
+          <h3 class="font-extrabold text-base text-white flex items-center gap-2">🎧 مكتبة الأصوات والموسيقى الهادئة</h3>
+          <p class="text-[11px] text-slate-300">أصوات نقية تعمل فوراً وبدون انقطاع</p>
+        </div>
+        <button onclick="closeAudioModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center">✕</button>
       </div>
 
-      <div class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+      <div class="space-y-4 overflow-y-auto pr-1 flex-1">
         
-        <!-- تلاوات القرآن الكريم -->
-        <div onclick="playAudio('https://server8.mp3quran.net/afs/002.mp3', 'سورة البقرة - مشاري العفاسي')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
-          <div>
-            <p class="text-xs font-extrabold text-white">📖 سورة البقرة - الشيخ مشاري العفاسي</p>
-            <p class="text-[10px] text-indigo-300">تلاوة خاشعة وهادئة</p>
+        <!-- قسم 1: معزوفات العود الشرقي الهادئة (تعمل برمجياً بدقة 100%) -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">🪕 تقاسيم ومعزوفات عود هادئة (تعمل دائماً)</h4>
+          
+          <div onclick="startSynthAudio('oud_hijaz', 'تقاسيم عود هادئة - مقام الحجاز', 'عزف شرقي دافئ للتركيز العميق')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">🪕 تقاسيم عود شرقية - مقام الحجاز</p>
+              <p class="text-[10px] text-amber-200/80">نغمات عود دافئة وبطيئة تبعث على الهدوء</p>
+            </div>
+            <span class="text-xs bg-amber-500/80 hover:bg-amber-500 px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold shadow">تشغيل ▶</span>
           </div>
-          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+
+          <div onclick="startSynthAudio('oud_nahawand', 'معزوفة عود ليلية - مقام النهاوند', 'ألحان شاعرية مريحة للأعصاب')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">🎶 معزوفة عود ليلية - مقام النهاوند</p>
+              <p class="text-[10px] text-amber-200/80">عزف منفرد هادئ مثالي للدراسة الليلية</p>
+            </div>
+            <span class="text-xs bg-amber-500/80 hover:bg-amber-500 px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold shadow">تشغيل ▶</span>
+          </div>
         </div>
 
-        <div onclick="playAudio('https://server11.mp3quran.net/sds/001.mp3', 'تلاوة خاشعة - عبد الرحمن السديس')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
-          <div>
-            <p class="text-xs font-extrabold text-white">📖 تلاوة خاشعة - الشيخ عبد الرحمن السديس</p>
-            <p class="text-[10px] text-indigo-300">صفاء ذهني وتبرك</p>
+        <!-- قسم 2: أصوات الطبيعة المولدة برمجياً (مضمونة 100% بدون روابط خارجية) -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-extrabold text-sky-300 flex items-center gap-1.5">🌧️ أصوات الطبيعة والتركيز (نقية ومستمرة)</h4>
+          
+          <div onclick="startSynthAudio('rain', 'صوت المطر الهادئ المستمر', 'عزل الضوضاء وصفاء الذهن')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">🌧️ زخات المطر الهادئ</p>
+              <p class="text-[10px] text-sky-200/80">صوت مطر طبيعي متواصل بدون انقطاع</p>
+            </div>
+            <span class="text-xs bg-sky-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
           </div>
-          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
+
+          <div onclick="startSynthAudio('ocean', 'أمواج البحر الليلية', 'إيقاع أمواج هادئ للاسترخاء')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">🌊 أمواج البحر الناعمة</p>
+              <p class="text-[10px] text-sky-200/80">تدرج موجي طبيعي يريح العقل</p>
+            </div>
+            <span class="text-xs bg-sky-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
+          </div>
+
+          <div onclick="startSynthAudio('brown_noise', 'الضوضاء البنية العميقة (Deep Focus)', 'تمنع التشتت وتزيد التركيز')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">🌌 صوت الفضاء والتركيز العميق</p>
+              <p class="text-[10px] text-sky-200/80">ترددات منخفضة دافئة للقراءة والحفظ</p>
+            </div>
+            <span class="text-xs bg-sky-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
+          </div>
         </div>
 
-        <div onclick="playAudio('https://server7.mp3quran.net/abdulsamad/001.mp3', 'ترتيل هادئ - عبد الباسط عبد الصمد')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
-          <div>
-            <p class="text-xs font-extrabold text-white">📖 ترتيل هادئ - الشيخ عبد الباسط عبد الصمد</p>
-            <p class="text-[10px] text-indigo-300">نبرة مباركة للتركيز</p>
+        <!-- قسم 3: القرآن الكريم (روابط بث مباشر موثوقة) -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-extrabold text-emerald-300 flex items-center gap-1.5">📖 تلاوات القرآن الكريم</h4>
+          
+          <div onclick="playStreamAudio('https://server8.mp3quran.net/afs/002.mp3', 'سورة البقرة - مشاري العفاسي', 'تلاوة خاشعة')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">📖 سورة البقرة - الشيخ مشاري العفاسي</p>
+              <p class="text-[10px] text-emerald-200/80">سكينة وبركة في وقت الدراسة</p>
+            </div>
+            <span class="text-xs bg-emerald-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
           </div>
-          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
-        </div>
 
-        <!-- أصوات الطبيعة والمطر -->
-        <div onclick="playAudio('https://cdn.pixabay.com/download/audio/2021/08/09/audio_193988cb62.mp3?filename=rain-and-thunder-nature-sounds-7575.mp3', 'أصوات المطر الهادئ')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
-          <div>
-            <p class="text-xs font-extrabold text-white">🌧️ أصوات المطر الهادئ</p>
-            <p class="text-[10px] text-indigo-300">استرخاء وعزل للضوضاء</p>
+          <div onclick="playStreamAudio('https://server11.mp3quran.net/sds/001.mp3', 'سورة الفاتحة - عبد الرحمن السديس', 'تلاوة الحرم المكي')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">📖 تلاوة خاشعة - الشيخ عبد الرحمن السديس</p>
+              <p class="text-[10px] text-emerald-200/80">نبرة روحانية هادئة</p>
+            </div>
+            <span class="text-xs bg-emerald-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
           </div>
-          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
-        </div>
 
-        <div onclick="playAudio('https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32c84278.mp3?filename=gentle-ocean-waves-111162.mp3', 'أمواج البحر الناعمة')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 hover:bg-indigo-950/60 border border-white/10 cursor-pointer transition">
-          <div>
-            <p class="text-xs font-extrabold text-white">🌊 أمواج البحر الناعمة</p>
-            <p class="text-[10px] text-indigo-300">راحة نفسية عميقة</p>
+          <div onclick="playStreamAudio('https://server12.mp3quran.net/maher/018.mp3', 'سورة الكهف - ماهر المعيقلي', 'تلاوة عطرة ومريحة')" class="glass-card p-3.5 rounded-2xl flex items-center justify-between cursor-pointer">
+            <div>
+              <p class="text-xs font-extrabold text-white">📖 سورة الكهف - الشيخ ماهر المعيقلي</p>
+              <p class="text-[10px] text-emerald-200/80">صوت عذب يبعث الطمأنينة</p>
+            </div>
+            <span class="text-xs bg-emerald-600 px-3.5 py-1.5 rounded-xl text-white font-extrabold shadow">تشغيل ▶</span>
           </div>
-          <span class="text-xs bg-indigo-600 px-3 py-1.5 rounded-lg text-white font-bold shadow">تشغيل 🔊</span>
         </div>
 
       </div>
 
-      <div class="pt-3 border-t border-white/10 flex justify-between items-center">
-        <span id="nowPlayingText" class="text-xs text-indigo-200 font-bold">الحالة: متوقف</span>
-        <button onclick="stopAudio()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow">إيقاف الصوت ⏹️</button>
+      <div class="pt-3 border-t border-white/10 flex flex-wrap justify-between items-center gap-2">
+        <span id="modalAudioStatus" class="text-xs text-indigo-200 font-bold">الحالة: متوقف حالياً</span>
+        <button onclick="stopAllAudio()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold rounded-xl shadow transition">إيقاف الصوت ⏹️</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة منبثقة عامة -->
-  <div id="modalBackdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-    <div class="glass-card max-w-md w-full p-6 space-y-4 border border-white/20">
+  <!-- =========================================================
+       نافذة اختيار الخلفيات ("اختر عالمك")
+  ========================================================== -->
+  <div id="bgModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="glass-panel max-w-2xl w-full rounded-3xl p-6 space-y-4 border border-white/20">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <h3 id="modalTitle" class="font-extrabold text-base text-white">إضافة عنصر</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+        <h3 class="font-extrabold text-base text-white">🌌 اختر عالمك (خلفيات هادئة للدراسة)</h3>
+        <button onclick="closeBgModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center">✕</button>
       </div>
-      <div id="modalBody" class="space-y-3"></div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1">
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=500&q=80" alt="ليلة نجوم" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">مجرة الليل والنجوم</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80" alt="شاطئ هادئ" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">شاطئ هادئ ومشرق</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=500&q=80" alt="غابة خضراء" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">غابة الضباب الهادئة</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80" alt="سماء ليلية" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">سماء الشفق الهادئة</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" alt="مكتبة دافئة" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">أجواء مكتبة كلاسيكية</p>
+        </div>
+        <div onclick="changeBackground('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80')" class="cursor-pointer rounded-2xl overflow-hidden border-2 border-indigo-500/40 hover:border-indigo-400 transition bg-slate-900 group">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80" alt="قمم الجبال" class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
+          <p class="p-2 text-xs font-bold text-center text-white">قمم الجبال الساحرة</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- عنصر الصوت الخلفي الخفي -->
-  <audio id="globalAudio" loop class="hidden"></audio>
+  <!-- =========================================================
+       نافذة إضافة / تعديل حصة في الجدول الدراسي
+  ========================================================== -->
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="glass-panel max-w-md w-full rounded-3xl p-6 space-y-4 border border-white/20">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <h3 id="scheduleModalTitle" class="font-extrabold text-base text-white">➕ إضافة مادة للجدول الدراسي</h3>
+        <button onclick="closeScheduleModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="saveScheduleItem(event)" class="space-y-3.5">
+        <input type="hidden" id="editScheduleId" value="">
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">اليوم</label>
+          <select id="schedDay" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-white/15 text-xs font-bold text-white focus:outline-none focus:border-indigo-400" required>
+            <option value="السبت">السبت</option>
+            <option value="الأحد">الأحد</option>
+            <option value="الإثنين">الإثنين</option>
+            <option value="الثلاثاء">الثلاثاء</option>
+            <option value="الأربعاء">الأربعاء</option>
+            <option value="الخميس">الخميس</option>
+            <option value="الجمعة">الجمعة</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">اسم المادة الدراسية</label>
+          <input type="text" id="schedSubject" placeholder="مثلاً: الفيزياء، الرياضيات، اللغة العربية..." class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400" required>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">وقت البدء</label>
+            <input type="text" id="schedTime" placeholder="مثلاً: 4:00 - 5:30 م" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">لون التمييز</label>
+            <select id="schedColor" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-white/15 text-xs font-bold text-white focus:outline-none">
+              <option value="indigo">أزرق نيلي</option>
+              <option value="emerald">أخضر زمردي</option>
+              <option value="amber">ذهبي دافئ</option>
+              <option value="rose">وردي هادئ</option>
+              <option value="sky">سماوي</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">ملاحظات أو موضوع الدراسة (اختياري)</label>
+          <input type="text" id="schedNote" placeholder="مثلاً: مراجعة الفصل الأول + حل مسائل" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400">
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="submit" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold rounded-2xl shadow-lg transition">حفظ في الجدول</button>
+          <button type="button" onclick="closeScheduleModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-2xl transition">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- عنصر الصوت للبث المباشر (القرآن الكريم) -->
+  <audio id="streamAudioElement" loop preload="none" class="hidden"></audio>
 
   <script>
-    const defaultData = {
-      siteTitle: "تطبيق مجرتي",
+    // =========================================================
+    // 1. إدارة البيانات والحالة (State & LocalStorage)
+    // =========================================================
+    const DAYS_ORDER = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+
+    const defaultState = {
       currentBg: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80",
-      ministerial: [
-        { id: 1, subject: "الفيزياء", year: "2023 دور أول", q: "ما الفائدة العملية من وجود المادة العازلة بين صفيحتي المتسعة؟", a: "1. زيادة سعة المتسعة حسب العلاقة Ck = k.C\n2. منع الانهيار الكهربائي المبكر للعازل." }
-      ],
-      exams: [
-        { id: 1, q: "وحدة قياس السعة الكهربائية هي:", options: ["الأمبير", "الفاراد", "الأوم", "الفولت"], correct: 1 }
+      layoutMode: "landscape", // 'landscape' or 'portrait'
+      completedMinutesToday: 0,
+      tasks: [
+        { id: 1, text: "جلسة تركيز 25 دقيقة لمراجعة المادة الأساسية", done: false },
+        { id: 2, text: "ترتيب جدول الدراسة الأسبوعي", done: true }
       ],
       schedule: [
-        { id: 1, day: "السبت", subject: "الفيزياء", time: "4:00 - 6:00 مساءً", note: "الفصل الأول" }
-      ],
-      tasks: [
-        { id: 1, text: "مراجعة ورد اليوم من القرآن الكريم", done: false },
-        { id: 2, text: "حل مسائل الفصل الأول فيزياء", done: true }
-      ],
-      pdfs: [
-        { id: 1, title: "ملخص قوانين الفيزياء", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" }
+        { id: 101, day: "السبت", subject: "الرياضيات", time: "4:00 - 5:30 م", note: "حل تمارين الفصل الأول", color: "indigo" },
+        { id: 102, day: "السبت", subject: "الفيزياء", time: "7:00 - 8:30 م", note: "مراجعة القوانين والمسائل", color: "sky" },
+        { id: 103, day: "الأحد", subject: "الكيمياء", time: "4:30 - 6:00 م", note: "تفاعلات العضوية", color: "emerald" },
+        { id: 104, day: "الإثنين", subject: "اللغة العربية", time: "5:00 - 6:30 م", note: "قواعد وأدب", color: "amber" }
       ]
     };
 
-    let appData = JSON.parse(localStorage.getItem('studyPlatformMagrati')) || defaultData;
-    let editMode = false;
+    let appState = JSON.parse(localStorage.getItem('magratiFocusApp_v2')) || defaultState;
 
-    function saveData() {
-      localStorage.setItem('studyPlatformMagrati', JSON.stringify(appData));
+    function saveState() {
+      localStorage.setItem('magratiFocusApp_v2', JSON.stringify(appState));
     }
 
-    // إدارة الخلفيات
-    function changeBackground(url) {
-      appData.currentBg = url;
-      saveData();
-      applyBackground();
-      closeBgModal();
+    // إشعارات عصرية بديلة عن alert
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-900/95 border-indigo-400/50 text-white',
+        success: 'bg-emerald-950/95 border-emerald-400/50 text-emerald-100',
+        warn: 'bg-amber-950/95 border-amber-400/50 text-amber-100'
+      };
+      toast.className = `px-4 py-2.5 rounded-2xl border backdrop-blur-md shadow-2xl text-xs font-bold flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+      toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    // =========================================================
+    // 2. تبديل وضع الشاشة (أفقي Landscape / عمودي Portrait)
+    // =========================================================
+    function applyLayoutMode() {
+      const body = document.getElementById('pageBody');
+      const icon = document.getElementById('orientationIcon');
+      const label = document.getElementById('orientationLabel');
+
+      if (appState.layoutMode === 'portrait') {
+        body.classList.remove('layout-landscape');
+        body.classList.add('layout-portrait');
+        icon.textContent = '🖥️';
+        label.textContent = 'وضع أفقي';
+      } else {
+        body.classList.remove('layout-portrait');
+        body.classList.add('layout-landscape');
+        icon.textContent = '📱';
+        label.textContent = 'وضع عمودي';
+      }
+    }
+
+    async function toggleOrientationLayout() {
+      appState.layoutMode = appState.layoutMode === 'landscape' ? 'portrait' : 'landscape';
+      saveState();
+      applyLayoutMode();
+
+      // محاولة تدوير الشاشة فعلياً على الهواتف الذكية إذا كان المتصفح يدعم ذلك
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock(appState.layoutMode === 'landscape' ? 'landscape' : 'portrait');
+        }
+      } catch (e) {
+        // تجاهل الخطأ في المتصفحات المكتبية التي لا تدعم قفل التوجيه، حيث يتغير التخطيط البصري تلقائياً
+      }
+
+      showToast(appState.layoutMode === 'portrait' ? 'تم التبديل إلى العرض العمودي المدمج 📱' : 'تم التبديل إلى العرض الأفقي العريض 🖥️');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {
+          showToast('اضغط F11 لتفعيل ملء الشاشة');
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // =========================================================
+    // 3. التنقل بين الأقسام والخلفيات
+    // =========================================================
+    function switchTab(tabId) {
+      document.querySelectorAll('.section-panel').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('sec-' + tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-5 py-2 rounded-2xl text-xs sm:text-sm font-extrabold bg-white/10 text-slate-200 hover:bg-white/20 transition flex items-center gap-2';
+      });
+
+      const activeBtn = document.getElementById('tab-' + tabId);
+      activeBtn.className = 'tab-btn px-5 py-2 rounded-2xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2';
     }
 
     function applyBackground() {
-      const bg = appData.currentBg || defaultData.currentBg;
-      document.getElementById('pageBody').style.backgroundImage = `linear-gradient(rgba(5, 10, 25, 0.5), rgba(5, 10, 25, 0.7)), url('${bg}')`;
+      const bg = appState.currentBg || defaultState.currentBg;
+      document.getElementById('pageBody').style.backgroundImage = `linear-gradient(rgba(6, 10, 24, 0.55), rgba(6, 10, 24, 0.78)), url('${bg}')`;
     }
 
-    function openBgModal() { document.getElementById('bgModal').classList.remove('hidden'); document.getElementById('bgModal').classList.add('flex'); }
-    function closeBgModal() { document.getElementById('bgModal').classList.add('hidden'); document.getElementById('bgModal').classList.remove('flex'); }
-
-    // إدارة الأصوات
-    function openAudioModal() { document.getElementById('audioModal').classList.remove('hidden'); document.getElementById('audioModal').classList.add('flex'); }
-    function closeAudioModal() { document.getElementById('audioModal').classList.add('hidden'); document.getElementById('audioModal').classList.remove('flex'); }
-
-    function playAudio(url, name) {
-      const audio = document.getElementById('globalAudio');
-      audio.src = url;
-      audio.play().then(() => {
-        document.getElementById('nowPlayingText').textContent = "قيد التشغيل: " + name;
-      }).catch(err => alert("تعذر تشغيل الصوت، حاول مرة أخرى."));
+    function changeBackground(url) {
+      appState.currentBg = url;
+      saveState();
+      applyBackground();
+      closeBgModal();
+      showToast('تم تغيير خلفية عالمك بنجاح 🎨', 'success');
     }
 
-    function stopAudio() {
-      const audio = document.getElementById('globalAudio');
-      audio.pause();
-      document.getElementById('nowPlayingText').textContent = "الحالة: متوقف";
+    function openBgModal() {
+      document.getElementById('bgModal').classList.remove('hidden');
+      document.getElementById('bgModal').classList.add('flex');
+    }
+    function closeBgModal() {
+      document.getElementById('bgModal').classList.add('hidden');
+      document.getElementById('bgModal').classList.remove('flex');
     }
 
-    // التنقل
-    function switchTab(tabId) {
-      document.querySelectorAll('.section-panel').forEach(el => el.classList.add('hidden'));
-      document.getElementById('sec-' + tabId).classList.remove('hidden');
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white');
-        btn.classList.add('bg-white/10', 'text-white');
-      });
-      event.currentTarget.classList.add('bg-indigo-600', 'text-white');
-      event.currentTarget.classList.remove('bg-white/10');
-    }
-
-    // وضع التعديل
-    function toggleEditMode() {
-      editMode = !editMode;
-      document.getElementById('editModeBtn').classList.toggle('bg-amber-500/40', editMode);
-      document.querySelectorAll('.edit-only').forEach(el => el.classList.toggle('hidden', !editMode));
-      renderAll();
-    }
-
-    // المؤقت
-    let timerSeconds = 25 * 60;
+    // =========================================================
+    // 4. مؤقت البومودورو الدائري القابل للتخصيص (SVG Ring)
+    // =========================================================
+    const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 96; // 603.19
+    let totalDurationSeconds = 25 * 60;
+    let remainingSeconds = 25 * 60;
     let timerInterval = null;
+    let currentTimerType = 'focus'; // 'focus' or 'break'
 
-    function updateTimerDisplay() {
-      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-      const secs = String(timerSeconds % 60).padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+    function updateTimerUI() {
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
+      document.getElementById('timerDisplay').textContent =
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+      // تحديث حلقة التقدم الدائرية
+      const ring = document.getElementById('progressRing');
+      const progressRatio = totalDurationSeconds > 0 ? (remainingSeconds / totalDurationSeconds) : 0;
+      const offset = CIRCLE_CIRCUMFERENCE * (1 - progressRatio);
+      ring.style.strokeDashoffset = offset;
+      ring.setAttribute('stroke', currentTimerType === 'break' ? 'url(#breakGradient)' : 'url(#timerGradient)');
     }
 
-    function setTimerMinutes(m) {
+    function selectPreset(minutes, labelText, type = 'focus') {
       pauseTimer();
-      timerSeconds = m * 60;
-      updateTimerDisplay();
+      currentTimerType = type;
+      totalDurationSeconds = minutes * 60;
+      remainingSeconds = totalDurationSeconds;
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'bg-emerald-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-300');
+      });
+
+      const activePreset = document.getElementById('preset-' + minutes);
+      if (activePreset) {
+        activePreset.classList.remove('text-slate-300');
+        activePreset.classList.add(type === 'break' ? 'bg-emerald-600' : 'bg-indigo-600', 'text-white', 'shadow');
+      }
+
+      document.getElementById('timerModeBadge').textContent = type === 'break' ? 'وقت استراحة' : 'وضع الدراسة';
+      document.getElementById('timerSubLabel').textContent = `المدة الكلية: ${minutes} دقيقة`;
+      document.getElementById('statusText').textContent = labelText;
+      updateTimerUI();
+    }
+
+    function applyCustomTime(e) {
+      e.preventDefault();
+      const input = document.getElementById('customMinutesInput');
+      const mins = parseInt(input.value, 10);
+      if (!mins || mins < 1 || mins > 300) {
+        showToast('يرجى إدخال مدة صحيحة بين 1 و 300 دقيقة', 'warn');
+        return;
+      }
+      pauseTimer();
+      currentTimerType = 'focus';
+      totalDurationSeconds = mins * 60;
+      remainingSeconds = totalDurationSeconds;
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'bg-emerald-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-300');
+      });
+
+      document.getElementById('timerModeBadge').textContent = 'وقت مخصص';
+      document.getElementById('timerSubLabel').textContent = `المدة المخصصة: ${mins} دقيقة`;
+      document.getElementById('statusText').textContent = `جلسة مخصصة (${mins} دقيقة)`;
+      input.value = '';
+      updateTimerUI();
+      showToast(`تم ضبط المؤقت على ${mins} دقيقة ⏱️`, 'success');
     }
 
     function startTimer() {
       if (timerInterval) return;
+      document.getElementById('timerCircleWrapper').classList.add('timer-glow');
+      document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping';
+      document.getElementById('statusText').textContent = currentTimerType === 'break' ? 'استراحة هنيئة... جدد طاقتك' : 'الوقت يمضي... ركّز في هدفك';
+
       timerInterval = setInterval(() => {
-        if (timerSeconds > 0) {
-          timerSeconds--;
-          updateTimerDisplay();
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerUI();
         } else {
           pauseTimer();
-          alert("انتهى وقت التركيز! أحسنت يا بطل.");
+          playCompletionBell();
+          if (currentTimerType === 'focus') {
+            const addedMins = Math.round(totalDurationSeconds / 60);
+            appState.completedMinutesToday = (appState.completedMinutesToday || 0) + addedMins;
+            saveState();
+            renderCompletedMinutes();
+            showToast(`أحسنت! أتممت ${addedMins} دقيقة من التركيز 🎉`, 'success');
+          } else {
+            showToast('انتهت الاستراحة! هيا نعود للدراسة 💪', 'info');
+          }
         }
       }, 1000);
     }
 
-    function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
-    function resetTimer() { pauseTimer(); timerSeconds = 25 * 60; updateTimerDisplay(); }
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('timerCircleWrapper').classList.remove('timer-glow');
+      document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-amber-400';
+      document.getElementById('statusText').textContent = 'المؤقت متوقف مؤقتاً';
+    }
 
-    // المهام والوظائف الأساسية
+    function resetTimer() {
+      pauseTimer();
+      remainingSeconds = totalDurationSeconds;
+      document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse';
+      document.getElementById('statusText').textContent = 'جاهز للبدء من جديد';
+      updateTimerUI();
+    }
+
+    function renderCompletedMinutes() {
+      document.getElementById('completedMinutesBadge').textContent = `${appState.completedMinutesToday || 0} دقيقة`;
+    }
+
+    // =========================================================
+    // 5. مهام الجلسة اليومية
+    // =========================================================
     function renderTasks() {
       const list = document.getElementById('tasksList');
-      list.innerHTML = appData.tasks.map(t => `
-        <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-white/10">
-          <label class="flex items-center gap-2.5 cursor-pointer flex-1">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 accent-indigo-600">
-            <span class="text-xs ${t.done ? 'line-through text-slate-400' : 'text-white font-semibold'}">${t.text}</span>
-          </label>
-          <button onclick="deleteTask(${t.id})" class="text-xs text-rose-400 font-bold px-2">✕</button>
-        </li>
-      `).join('');
-      const doneCount = appData.tasks.filter(t => t.done).length;
-      const pct = appData.tasks.length ? Math.round((doneCount / appData.tasks.length) * 100) : 0;
+      if (!appState.tasks.length) {
+        list.innerHTML = `<li class="text-center py-6 text-xs text-slate-400">لا توجد مهام حالياً.. أضف هدفك الأول أعلاه ✨</li>`;
+      } else {
+        list.innerHTML = appState.tasks.map(t => `
+          <li class="glass-card p-3 rounded-2xl flex items-center justify-between gap-2">
+            <label class="flex items-center gap-3 cursor-pointer flex-1">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 rounded accent-indigo-500 cursor-pointer">
+              <span class="text-xs sm:text-sm ${t.done ? 'line-through text-slate-400' : 'text-white font-semibold'}">${t.text}</span>
+            </label>
+            <button onclick="deleteTask(${t.id})" class="text-xs text-rose-400 hover:text-rose-300 font-bold px-2 py-1 rounded-lg hover:bg-rose-500/10 transition">✕</button>
+          </li>
+        `).join('');
+      }
+
+      const doneCount = appState.tasks.filter(t => t.done).length;
+      const pct = appState.tasks.length ? Math.round((doneCount / appState.tasks.length) * 100) : 0;
       document.getElementById('taskProgressText').textContent = pct + '%';
       document.getElementById('taskProgressBar').style.width = pct + '%';
     }
@@ -404,74 +849,60 @@
       e.preventDefault();
       const input = document.getElementById('newTaskInput');
       if (!input.value.trim()) return;
-      appData.tasks.push({ id: Date.now(), text: input.value.trim(), done: false });
+      appState.tasks.unshift({ id: Date.now(), text: input.value.trim(), done: false });
       input.value = '';
-      saveData();
+      saveState();
       renderTasks();
     }
 
     function toggleTask(id) {
-      const task = appData.tasks.find(t => t.id === id);
+      const task = appState.tasks.find(t => t.id === id);
       if (task) task.done = !task.done;
-      saveData();
+      saveState();
       renderTasks();
     }
 
     function deleteTask(id) {
-      appData.tasks = appData.tasks.filter(t => t.id !== id);
-      saveData();
+      appState.tasks = appState.tasks.filter(t => t.id !== id);
+      saveState();
       renderTasks();
     }
 
-    function renderMinisterial() {
-      const list = document.getElementById('ministerialList');
-      list.innerHTML = appData.ministerial.map(item => `
-        <div class="glass-card p-4 space-y-2">
-          <span class="text-[10px] bg-indigo-900/80 text-indigo-200 px-2.5 py-1 rounded-lg">${item.subject} • ${item.year}</span>
-          <p class="font-bold text-xs text-white">س: ${item.q}</p>
-          <p class="text-[11px] text-emerald-300">ج: ${item.a}</p>
-        </div>
-      `).join('');
-    }
-
-    function renderExams() {
-      document.getElementById('examContainer').innerHTML = appData.exams.map((ex, idx) => `
-        <p class="font-bold text-xs text-white">${idx + 1}. ${ex.q}</p>
-      `).join('');
-    }
+    // =========================================================
+    // 6. الجدول الدراسي الأسبوعي (إضافة، تعديل، حذف)
+    // =========================================================
+    const COLOR_STYLES = {
+      indigo: 'border-indigo-400/40 bg-indigo-500/15 text-indigo-200',
+      emerald: 'border-emerald-400/40 bg-emerald-500/15 text-emerald-200',
+      amber: 'border-amber-400/40 bg-amber-500/15 text-amber-200',
+      rose: 'border-rose-400/40 bg-rose-500/15 text-rose-200',
+      sky: 'border-sky-400/40 bg-sky-500/15 text-sky-200'
+    };
 
     function renderSchedule() {
-      document.getElementById('scheduleGrid').innerHTML = appData.schedule.map(s => `
-        <div class="glass-card p-4">
-          <p class="text-xs font-bold text-indigo-300">${s.day}</p>
-          <h3 class="font-bold text-sm text-white">${s.subject}</h3>
-          <p class="text-[11px] text-slate-300">${s.time}</p>
-        </div>
-      `).join('');
-    }
+      const grid = document.getElementById('scheduleDaysGrid');
+      const filterDay = document.getElementById('dayFilterSelect').value;
+      const daysToShow = filterDay === 'all' ? DAYS_ORDER : [filterDay];
 
-    function renderPdfs() {
-      document.getElementById('pdfGrid').innerHTML = appData.pdfs.map(p => `
-        <div class="glass-card p-4 flex flex-col justify-between gap-2">
-          <p class="font-bold text-xs text-white">📄 ${p.title}</p>
-          <a href="${p.url}" target="_blank" class="text-center py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] rounded-xl">فتح وقراءة</a>
-        </div>
-      `).join('');
-    }
+      grid.innerHTML = daysToShow.map(day => {
+        const dayItems = appState.schedule.filter(item => item.day === day);
+        return `
+          <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between space-y-3 border border-white/10">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <h3 class="font-extrabold text-sm text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                ${day}
+              </h3>
+              <button onclick="openScheduleModal('${day}')" title="إضافة مادة ليوم ${day}" class="text-[11px] bg-white/10 hover:bg-indigo-600 text-white px-2.5 py-1 rounded-xl font-bold transition">+ إضافة</button>
+            </div>
 
-    function closeModal() { document.getElementById('modalBackdrop').classList.add('hidden'); document.getElementById('modalBackdrop').classList.remove('flex'); }
-
-    function renderAll() {
-      document.getElementById('siteTitle').textContent = appData.siteTitle;
-      applyBackground();
-      renderTasks();
-      renderMinisterial();
-      renderExams();
-      renderSchedule();
-      renderPdfs();
-    }
-
-    renderAll();
-  </script>
-</body>
-</html>
+            <div class="space-y-2.5 flex-1">
+              ${dayItems.length === 0
+                ? `<p class="text-[11px] text-slate-400 text-center py-6">لا توجد حصص مجدولة</p>`
+                : dayItems.map(item => `
+                    <div class="p-3 rounded-2xl border ${COLOR_STYLES[item.color] || COLOR_STYLES.indigo} space-y-1.5 relative group">
+                      <div class="flex items-start justify-between gap-2">
+                        <h4 class="font-extrabold text-xs sm:text-sm text-white">${item.subject}</h4>
+                        <div class="flex items-center gap-1">
+                          <button onclick="editScheduleItem(${item.id})" title="تعديل" class="text-[11px] px-1.5 py-0.5 rounded bg-black/25 hover:bg-black/50 text-white">✏️</button>
+                          <button onclick="deleteScheduleIte
